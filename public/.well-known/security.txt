@@ -1,0 +1,4 @@
+Contact: mailto:dev@nokulabs.com
+Contact: mailto:contact@nokulabs.com
+Preferred-Languages: en
+Policy: https://nokulabs.com/
