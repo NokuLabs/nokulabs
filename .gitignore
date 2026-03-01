@@ -6,6 +6,8 @@
 # testing
 /coverage
 
+#venv
+.venv/
 # next.js
 /.next/
 /out/
