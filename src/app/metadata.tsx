@@ -13,8 +13,9 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://nokulabs.com'),
   title: 'NOKU LABS – Infrastructure-grade software for operational environments',
   description:
-    'We architect systems for organizations where failure has consequences. Custom development, automation engineering, and security hardening for regulated and mission-critical operations.',
+    'We architect systems for organizations where failure has consequences. Custom development, automation engineering, and security hardening for regulated and mission-critical operations. / Arhitectăm sisteme pentru organizații unde eșecul are consecințe. Dezvoltare custom, automatizări și hardening de securitate pentru operațiuni reglementate.',
   keywords: [
+    // EN
     'infrastructure software',
     'systems architecture',
     'automation engineering',
@@ -22,6 +23,15 @@ export const metadata: Metadata = {
     'mission-critical systems',
     'operational software',
     'compliance systems',
+    // RO
+    'arhitectură sisteme',
+    'automatizări',
+    'dezvoltare software',
+    'securitate cibernetică',
+    'hardening',
+    'sisteme critice',
+    'conformitate',
+    'sector public',
   ],
   authors: [{ name: 'NOKU LABS' }],
   creator: 'NOKU LABS',
@@ -43,7 +53,7 @@ export const metadata: Metadata = {
     url: '/',
     title: 'NOKU LABS – Infrastructure-grade software for operational environments',
     description:
-      'We architect systems for organizations where failure has consequences. Custom development, automation engineering, and security hardening for regulated and mission-critical operations.',
+      'Infrastructure-grade development, automation engineering, and security hardening for regulated operations.',
     siteName: 'NOKU LABS',
   },
   twitter: {

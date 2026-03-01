@@ -19,6 +19,7 @@
     "framer-motion": "^11.2.10",
     "lucide-react": "^0.575.0",
     "next": "^14.2.35",
+    "next-intl": "^4.8.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^3.5.0"
@@ -31,9 +32,9 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.35",
     "postcss": "^8.4.38",
+    "rimraf": "^6.0.1",
     "serve": "^14.2.5",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.5",
-    "rimraf": "^6.0.1"
+    "typescript": "^5.4.5"
   }
 }
