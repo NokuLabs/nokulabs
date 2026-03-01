@@ -12,20 +12,24 @@ const COPY = {
     sub: 'Construim sisteme pentru organizații unde eșecul are consecințe.',
     body:
       'Dezvoltare custom, automatizări, integrare AI și hardening de securitate pentru operațiuni reglementate sau mission-critical.',
-    ctaPrimary: 'Solicită o evaluare',
+    ctaPrimary: 'Discută proiectul',
     ctaSecondary: 'Vezi abordarea',
-    ariaPrimary: 'Solicită o evaluare',
+    ariaPrimary: 'Discută proiectul',
     ariaSecondary: 'Vezi abordarea',
+    trustLine: 'Răspundem în 24h.',
+    secondTrustLine: 'No spam. Fără obligații.',
   },
   en: {
     h1: 'Trusted software for operational environments.',
     sub: 'We build systems for organizations where failure has consequences.',
     body:
       'Custom development, automation engineering, AI workflow integration, and security hardening for regulated and mission-critical operations.',
-    ctaPrimary: 'Request a review',
+    ctaPrimary: 'Discuss your project',
     ctaSecondary: 'See the approach',
-    ariaPrimary: 'Request a review',
+    ariaPrimary: 'Discuss your project',
     ariaSecondary: 'See the approach',
+    trustLine: 'Response within 24h.',
+    secondTrustLine: 'No spam. No obligation.',
   },
 } as const
 
@@ -90,6 +94,9 @@ export default function Hero() {
               {t.ctaSecondary}
             </Button>
           </div>
+
+          <p className="text-sm text-secondary mt-4">{t.trustLine}</p>
+          <p className="text-sm text-secondary mt-2">{t.secondTrustLine}</p>
         </div>
       </div>
     </section>
