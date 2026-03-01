@@ -8,8 +8,8 @@ const STORAGE_KEY = 'noku_lang'
 
 const COPY = {
   ro: {
-    h1: 'Software „infrastructure-grade” pentru medii operaționale.',
-    sub: 'Arhitectăm sisteme pentru organizații unde eșecul are consecințe.',
+    h1: 'Software de încredere pentru medii operaționale.',
+    sub: 'Construim sisteme pentru organizații unde eșecul are consecințe.',
     body:
       'Dezvoltare custom, automatizări, integrare AI și hardening de securitate pentru operațiuni reglementate sau mission-critical.',
     ctaPrimary: 'Solicită o evaluare',
@@ -18,8 +18,8 @@ const COPY = {
     ariaSecondary: 'Vezi abordarea',
   },
   en: {
-    h1: 'Infrastructure-grade software for operational environments.',
-    sub: 'We architect systems for organizations where failure has consequences.',
+    h1: 'Trusted software for operational environments.',
+    sub: 'We build systems for organizations where failure has consequences.',
     body:
       'Custom development, automation engineering, AI workflow integration, and security hardening for regulated and mission-critical operations.',
     ctaPrimary: 'Request a review',
