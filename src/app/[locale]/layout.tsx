@@ -6,8 +6,13 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 
 import { NextIntlClientProvider } from 'next-intl'
+import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { locales, type Locale } from '../i18n'
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }))
+}
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap', preload: true })
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono', display: 'swap', preload: true })
@@ -28,6 +33,9 @@ export default async function RootLayout({
   const { locale } = await params
 
   if (!locales.includes(locale as Locale)) notFound()
+
+  // Required for static rendering: sets locale without reading HTTP headers.
+  setRequestLocale(locale)
 
   const messages = (await import(`../messages/${locale}.json`)).default
 

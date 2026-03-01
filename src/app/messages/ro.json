@@ -8,7 +8,7 @@
   "hero": {
     "title": "Software de nivel infrastructură pentru medii operaționale.",
     "subtitle": "Arhitectăm sisteme pentru organizații unde eșecul are consecințe.",
-    "body": "Dezvoltare custom, automatizări și hardening de securitate pentru operațiuni reglementate și mission-critical.",
+    "body": "Dezvoltare custom, automatizări, integrare AI și hardening de securitate pentru operațiuni reglementate și mission-critical.",
     "ctaPrimary": "Începe o discuție",
     "ctaSecondary": "Vezi lucrări de referință"
   },
@@ -44,61 +44,5 @@
     "completeForm": "Completează formularul. Contextul trebuie să aibă minim {min} caractere.",
     "failed": "Trimiterea a eșuat. Încearcă din nou.",
     "networkError": "Eroare de rețea. Încearcă din nou."
-  }
-}
-{
-  "legal": {
-    "privacy": {
-      "title": "Politica de Confidențialitate",
-      "intro": "Colectăm doar datele necesare pentru a răspunde solicitărilor tale și pentru a asigura funcționarea site-ului.",
-      "dataWeCollect": {
-        "title": "Ce date colectăm",
-        "body": "Datele transmise prin formular (organizație, email, buget, termen, rezumat) și date tehnice minime (ex. IP pentru protecție anti-abuz)."
-      },
-      "howWeUse": {
-        "title": "Cum folosim datele",
-        "body": "Pentru a evalua solicitarea, a răspunde prin email și a preveni spam/abuz."
-      },
-      "retention": {
-        "title": "Perioada de stocare",
-        "body": "Păstrăm datele cât este necesar pentru comunicare și follow-up, apoi le ștergem sau le anonimizăm."
-      },
-      "sharing": {
-        "title": "Partajare cu terți",
-        "body": "Nu vindem date și nu le partajăm în scopuri de marketing. Putem folosi furnizori tehnici strict pentru livrare email / hosting."
-      },
-      "security": {
-        "title": "Securitate",
-        "body": "Aplicăm măsuri rezonabile de securitate (limitare abuz, logare minimă, principiu de minimizare a datelor)."
-      },
-      "contact": {
-        "title": "Contact",
-        "body": "Pentru întrebări legate de confidențialitate, folosește formularul de contact sau adresa publicată pe site."
-      }
-    },
-    "terms": {
-      "title": "Termeni și Condiții",
-      "intro": "Prin utilizarea acestui site accepți termenii de mai jos.",
-      "scope": {
-        "title": "Domeniu de aplicare",
-        "body": "Conținutul are scop informativ. Orice colaborare se stabilește contractual, separat."
-      },
-      "noWarranty": {
-        "title": "Fără garanții implicite",
-        "body": "Site-ul este oferit „ca atare”. Nu garantăm disponibilitate neîntreruptă sau lipsa erorilor."
-      },
-      "liability": {
-        "title": "Limitarea răspunderii",
-        "body": "Nu răspundem pentru pierderi indirecte rezultate din utilizarea informațiilor de pe site."
-      },
-      "acceptableUse": {
-        "title": "Utilizare acceptabilă",
-        "body": "Este interzis abuzul formularului, spam-ul sau încercările de a compromite securitatea."
-      },
-      "changes": {
-        "title": "Modificări",
-        "body": "Putem actualiza termenii periodic. Versiunea curentă este publicată pe această pagină."
-      }
-    }
   }
 }

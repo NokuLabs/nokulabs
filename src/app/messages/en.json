@@ -7,8 +7,8 @@
   },
   "hero": {
     "title": "Infrastructure-grade software for operational environments.",
-    "subtitle": "We architect systems for organizations where failure has consequences.",
-    "body": "Custom development, automation engineering, and security hardening for regulated and mission-critical operations.",
+    "subtitle": "We build systems for organizations where failure has consequences.",
+    "body": "Custom development, automation engineering, AI workflow integration, and security hardening for regulated and mission-critical operations.",
     "ctaPrimary": "Start a Conversation",
     "ctaSecondary": "View Reference Work"
   },
@@ -44,61 +44,5 @@
     "completeForm": "Please complete the form. Summary must be at least {min} characters.",
     "failed": "Submission failed. Please try again.",
     "networkError": "Network error. Please try again."
-  }
-}
-{
-  "legal": {
-    "privacy": {
-      "title": "Privacy Policy",
-      "intro": "We collect only what is necessary to respond to your request and keep the site reliable.",
-      "dataWeCollect": {
-        "title": "What we collect",
-        "body": "Form data (organization, email, budget, timeline, summary) and minimal technical data (e.g., IP for abuse prevention)."
-      },
-      "howWeUse": {
-        "title": "How we use data",
-        "body": "To evaluate your request, reply by email, and prevent spam/abuse."
-      },
-      "retention": {
-        "title": "Retention",
-        "body": "We retain data only as needed for communication and follow-up, then delete or anonymize it."
-      },
-      "sharing": {
-        "title": "Sharing",
-        "body": "We do not sell data or share it for marketing. We may use technical providers strictly for email delivery/hosting."
-      },
-      "security": {
-        "title": "Security",
-        "body": "We apply reasonable safeguards (abuse limiting, minimal logging, data minimization)."
-      },
-      "contact": {
-        "title": "Contact",
-        "body": "For privacy questions, use the contact form or the public address listed on the site."
-      }
-    },
-    "terms": {
-      "title": "Terms of Service",
-      "intro": "By using this site you agree to the terms below.",
-      "scope": {
-        "title": "Scope",
-        "body": "Content is informational. Any engagement is defined by a separate contract."
-      },
-      "noWarranty": {
-        "title": "No implied warranties",
-        "body": "The site is provided “as is”. We do not guarantee uninterrupted availability or error-free operation."
-      },
-      "liability": {
-        "title": "Limitation of liability",
-        "body": "We are not liable for indirect losses arising from use of information on this site."
-      },
-      "acceptableUse": {
-        "title": "Acceptable use",
-        "body": "Abusing the form, spamming, or attempting to compromise security is prohibited."
-      },
-      "changes": {
-        "title": "Changes",
-        "body": "We may update these terms periodically. The current version is published on this page."
-      }
-    }
   }
 }

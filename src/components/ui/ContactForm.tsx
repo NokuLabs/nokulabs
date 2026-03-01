@@ -146,8 +146,8 @@ export default function ContactForm() {
   useEffect(() => {
     setPayload((p) => ({
       ...p,
-      budget: budgets.includes(p.budget) ? p.budget : budgets[1],
-      timeline: timelines.includes(p.timeline) ? p.timeline : timelines[2],
+      budget: (budgets as readonly string[]).includes(p.budget) ? p.budget : budgets[1],
+      timeline: (timelines as readonly string[]).includes(p.timeline) ? p.timeline : timelines[2],
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang])
