@@ -7,8 +7,8 @@ import { useEffect, useRef, useState } from 'react'
 export type CubeFace =
   | 'about'
   | 'capabilities'
-  | 'portfolio'
   | 'approach'
+  | 'work'
   | 'security'
   | 'contact'
 
@@ -23,19 +23,19 @@ export interface CubeNavProps {
 // ─── Static data ─────────────────────────────────────────────────────────────
 //
 // IMPORTANT: Every array below is indexed in the same order:
-//   0 → front (about)       1 → back  (capabilities)
-//   2 → left  (portfolio)   3 → right (approach)
-//   4 → top   (security)    5 → bottom (contact)
+//   0 → front (about)        1 → back  (capabilities)
+//   2 → left  (approach)     3 → right (work)
+//   4 → top   (security)     5 → bottom (contact)
 //
 // If you re-order FACES you MUST re-order FACE_NORMALS and SNAP_TARGETS too.
 
 const FACES: { id: CubeFace; en: string; ro: string; tag: string }[] = [
-  { id: 'about',        en: 'About',        ro: 'Despre',       tag: '01' },
-  { id: 'capabilities', en: 'Capabilities', ro: 'Capabilități',  tag: '02' },
-  { id: 'portfolio',    en: 'Portfolio',    ro: 'Portofoliu',    tag: '03' },
-  { id: 'approach',     en: 'Approach',     ro: 'Abordare',      tag: '04' },
-  { id: 'security',     en: 'Security',     ro: 'Securitate',    tag: '05' },
-  { id: 'contact',      en: 'Contact',      ro: 'Contact',       tag: '06' },
+  { id: 'about',        en: 'ABOUT',        ro: 'DESPRE',       tag: '01' },
+  { id: 'capabilities', en: 'CAPABILITIES', ro: 'SERVICII',     tag: '02' },
+  { id: 'approach',     en: 'APPROACH',     ro: 'ABORDARE',     tag: '03' },
+  { id: 'work',         en: 'WORK',         ro: 'REFERINȚE',    tag: '04' },
+  { id: 'security',     en: 'SECURITY',     ro: 'SECURITATE',   tag: '05' },
+  { id: 'contact',      en: 'CONTACT',      ro: 'CONTACT',      tag: '06' },
 ]
 
 const FACE_SLOTS = ['front', 'back', 'left', 'right', 'top', 'bottom'] as const
@@ -105,6 +105,35 @@ function computeActiveFaceIdx(rxDeg: number, ryDeg: number): number {
 }
 
 /**
+ * Hysteresis-wrapped active-face detector.
+ * Only switches away from `currentBest` if the new winner leads by at least
+ * FACE_SWITCH_THRESHOLD — prevents rapid toggling when the cube sits near an
+ * edge angle where two face scores are nearly equal.
+ */
+const FACE_SWITCH_THRESHOLD = 0.08
+
+function computeActiveFaceIdxHysteresis(
+  rxDeg: number, ryDeg: number, currentBest: number
+): number {
+  const rx = (rxDeg * Math.PI) / 180
+  const ry = (ryDeg * Math.PI) / 180
+  const sinRx = Math.sin(rx); const cosRx = Math.cos(rx)
+  const sinRy = Math.sin(ry); const cosRy = Math.cos(ry)
+
+  let bestIdx = 0; let bestDot = -Infinity; let currentDot = 0
+  for (let i = 0; i < FACE_NORMALS.length; i++) {
+    const [x, y, z] = FACE_NORMALS[i]
+    const dot = y * sinRx - x * sinRy * cosRx + z * cosRy * cosRx
+    if (i === currentBest) currentDot = dot
+    if (dot > bestDot) { bestDot = dot; bestIdx = i }
+  }
+  if (bestIdx !== currentBest && bestDot - currentDot < FACE_SWITCH_THRESHOLD) {
+    return currentBest
+  }
+  return bestIdx
+}
+
+/**
  * Returns the angle equivalent to `target` that is closest to `current`.
  * Prevents the cube spinning the "long way round" during snap animation.
  */
@@ -155,6 +184,9 @@ export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
   // Direct reference to the 3D inner element — written during drag to avoid
   // React re-renders on every pointer-move event.
   const cubeInnerRef = useRef<HTMLDivElement>(null)
+  // Tracks the active face index inside RAF loops without triggering re-renders.
+  // React state (rotX/rotY) is only updated when this value changes.
+  const activeFaceIdxRef = useRef(computeActiveFaceIdx(-15, 30))
 
   // Drag tracking (all refs — pointer movement must NOT cause re-renders)
   const dragging   = useRef(false)
@@ -254,7 +286,20 @@ export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
       const tick = () => {
         // Slow, measured Y rotation — authority idle feel
         rot.current.y += 0.10
-        setRotY(rot.current.y)
+        // Direct DOM write — avoid React re-renders at 60 fps.
+        if (cubeInnerRef.current) {
+          cubeInnerRef.current.style.transform =
+            `rotateX(${rot.current.x}deg) rotateY(${rot.current.y}deg)`
+        }
+        // Only update React state when the active face actually changes.
+        const newIdx = computeActiveFaceIdxHysteresis(
+          rot.current.x, rot.current.y, activeFaceIdxRef.current
+        )
+        if (newIdx !== activeFaceIdxRef.current) {
+          activeFaceIdxRef.current = newIdx
+          setRotX(rot.current.x)
+          setRotY(rot.current.y)
+        }
         rafIdle.current = requestAnimationFrame(tick)
       }
       rafIdle.current = requestAnimationFrame(tick)
@@ -293,7 +338,16 @@ export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
       }
       rot.current.y += vel.current.y
 
-      applyRotation(rot.current.x, rot.current.y)
+      // Direct DOM write first; update React state only on face change.
+      const rx = rot.current.x; const ry = rot.current.y
+      if (cubeInnerRef.current) {
+        cubeInnerRef.current.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`
+      }
+      const newIdx = computeActiveFaceIdxHysteresis(rx, ry, activeFaceIdxRef.current)
+      if (newIdx !== activeFaceIdxRef.current) {
+        activeFaceIdxRef.current = newIdx
+        setRotX(rx); setRotY(ry)
+      }
       rafInertia.current = requestAnimationFrame(tick)
     }
     rafInertia.current = requestAnimationFrame(tick)
@@ -369,10 +423,19 @@ export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
   function onPointerUp() {
     if (!dragging.current) return
     dragging.current = false
-    // One state sync so the active-face indicator updates immediately after drag.
+    // Sync active face ref and state after drag ends.
+    const newIdx = computeActiveFaceIdxHysteresis(
+      rot.current.x, rot.current.y, activeFaceIdxRef.current
+    )
+    activeFaceIdxRef.current = newIdx
     setRotX(rot.current.x)
     setRotY(rot.current.y)
-    startInertia()
+    // Skip inertia for users who prefer reduced motion — go straight to idle.
+    if (reducedMotion.current) {
+      startIdleRef.current()
+    } else {
+      startInertia()
+    }
   }
 
   // ── Keyboard rotation ─────────────────────────────────────────────────────────
@@ -462,17 +525,17 @@ export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
                   }
                   aria-pressed={isActive}
                   onClick={() => {
-                    if (dragDist.current < 6) {
-                      snapToFace(i)
-                      onFaceSelect?.(face.id)
-                    }
+                    if (dragDist.current >= 6) return
+                    snapToFace(i)
+                    // Open overlay only when the clicked face is already active.
+                    if (isActive) onFaceSelect?.(face.id)
                   }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
                       e.stopPropagation()
                       snapToFace(i)
-                      onFaceSelect?.(face.id)
+                      if (isActive) onFaceSelect?.(face.id)
                     }
                   }}
                 >

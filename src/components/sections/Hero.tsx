@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
 import Button from '@/components/ui/Button'
 import CubeNav from '@/components/interactive/CubeNav'
 import type { CubeFace } from '@/components/interactive/CubeNav'
-import FaceOverlay from '@/components/interactive/FaceOverlay'
 
 type Lang = 'ro' | 'en'
 const STORAGE_KEY = 'noku_lang'
@@ -34,16 +35,26 @@ const COPY = {
   },
 } as const
 
+// Each cube face navigates to its own dedicated route.
+const FACE_ROUTES: Record<CubeFace, string> = {
+  about:        'about',
+  capabilities: 'capabilities',
+  approach:     'approach',
+  work:         'work',
+  security:     'security',
+  contact:      'contact',
+}
+
 function getLang(): Lang {
   if (typeof window === 'undefined') return 'ro'
   const saved = window.localStorage.getItem(STORAGE_KEY)
   return saved === 'en' ? 'en' : 'ro'
 }
 
-
 export default function Hero() {
   const [lang, setLang] = useState<Lang>('ro')
-  const [selectedFace, setSelectedFace] = useState<CubeFace | null>(null)
+  const router = useRouter()
+  const locale = useLocale()
 
   useEffect(() => {
     setLang(getLang())
@@ -60,7 +71,6 @@ export default function Hero() {
   const t = COPY[lang]
 
   return (
-    <>
     <section
       id="hero"
       className="relative min-h-screen flex items-center pt-20 pb-section-mobile md:pb-section-desktop px-6 lg:px-12 overflow-hidden"
@@ -106,10 +116,10 @@ export default function Hero() {
             </p>
 
             <div className="reveal reveal-delay-3 flex flex-col sm:flex-row gap-4">
-              <Button variant="primary" href="#engagement" aria-label={t.ariaPrimary}>
+              <Button variant="primary" href={`/${locale}/contact`} aria-label={t.ariaPrimary}>
                 {t.ctaPrimary}
               </Button>
-              <Button variant="secondary" href="#approach" aria-label={t.ariaSecondary}>
+              <Button variant="secondary" href={`/${locale}/about`} aria-label={t.ariaSecondary}>
                 {t.ctaSecondary}
               </Button>
             </div>
@@ -122,20 +132,21 @@ export default function Hero() {
           {/* CubeNav renders its own active-face status label internally. */}
           <div className="flex-none flex items-center justify-center">
             <div className="hidden md:block">
-              <CubeNav size={280} onFaceSelect={setSelectedFace} />
+              <CubeNav
+                size={280}
+                onFaceSelect={(face) => router.push(`/${locale}/${FACE_ROUTES[face]}`)}
+              />
             </div>
             <div className="md:hidden">
-              <CubeNav size={210} onFaceSelect={setSelectedFace} />
+              <CubeNav
+                size={210}
+                onFaceSelect={(face) => router.push(`/${locale}/${FACE_ROUTES[face]}`)}
+              />
             </div>
           </div>
 
         </div>
       </div>
     </section>
-
-    {selectedFace && (
-      <FaceOverlay face={selectedFace} onClose={() => setSelectedFace(null)} />
-    )}
-    </>
   )
 }

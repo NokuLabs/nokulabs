@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useLocale } from 'next-intl'
 import SectionLabel from '@/components/ui/SectionLabel'
 import Button from '@/components/ui/Button'
 
@@ -34,6 +35,7 @@ function getLang(): Lang {
 
 export default function Systems() {
   const [lang, setLang] = useState<Lang>('ro')
+  const locale = useLocale()
 
   useEffect(() => {
     setLang(getLang())
@@ -67,7 +69,7 @@ export default function Systems() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <Button variant="secondary" href="#engagement" aria-label={t.aria}>
+          <Button variant="secondary" href={`/${locale}/contact`} aria-label={t.aria}>
             {t.cta}
           </Button>
         </div>
