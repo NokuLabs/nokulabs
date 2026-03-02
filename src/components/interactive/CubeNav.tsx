@@ -16,6 +16,7 @@ type Lang = 'ro' | 'en'
 
 export interface CubeNavProps {
   onFaceSelect?: (face: CubeFace) => void
+  onFaceHover?: (face: CubeFace) => void
   /** Side length in px (default 280). */
   size?: number
 }
@@ -169,7 +170,7 @@ const RX_LIMIT = 88
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
+export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeNavProps) {
   const half = size / 2
 
   // ── Rotation state (drives active-face detection and status label) ───────────
@@ -524,6 +525,8 @@ export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
                       : label
                   }
                   aria-pressed={isActive}
+                  onMouseEnter={() => onFaceHover?.(face.id)}
+                  onTouchStart={() => onFaceHover?.(face.id)}
                   onClick={() => {
                     if (dragDist.current >= 6) return
                     snapToFace(i)

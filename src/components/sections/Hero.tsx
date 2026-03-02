@@ -135,12 +135,14 @@ export default function Hero() {
               <CubeNav
                 size={280}
                 onFaceSelect={(face) => router.push(`/${locale}/${FACE_ROUTES[face]}`)}
+                onFaceHover={(face) => router.prefetch(`/${locale}/${FACE_ROUTES[face]}`)}
               />
             </div>
             <div className="md:hidden">
               <CubeNav
                 size={210}
                 onFaceSelect={(face) => router.push(`/${locale}/${FACE_ROUTES[face]}`)}
+                onFaceHover={(face) => router.prefetch(`/${locale}/${FACE_ROUTES[face]}`)}
               />
             </div>
           </div>

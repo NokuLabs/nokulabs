@@ -4,6 +4,8 @@ import '../globals.css'
 
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import Hero from '@/components/sections/Hero'
+import SectionTransition from '@/components/layout/SectionTransition'
 
 import { NextIntlClientProvider } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
@@ -46,7 +48,11 @@ export default async function RootLayout({
 
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Header />
-          <main id="main-content" role="main">{children}</main>
+          {/* Hero renders here so it persists across route changes without remounting */}
+          <Hero />
+          <SectionTransition>
+            <main id="main-content" role="main">{children}</main>
+          </SectionTransition>
           <Footer />
         </NextIntlClientProvider>
       </body>
