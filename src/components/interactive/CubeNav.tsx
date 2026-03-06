@@ -69,8 +69,8 @@ const FACE_NORMALS: readonly [number, number, number][] = [
 const SNAP_TARGETS: readonly { rx: number; ry: number }[] = [
   { rx:   0, ry:   0 },  // 0 front  → about
   { rx:   0, ry: 180 },  // 1 back   → capabilities
-  { rx:   0, ry:  90 },  // 2 left   → portfolio
-  { rx:   0, ry: -90 },  // 3 right  → approach
+  { rx:   0, ry:  90 },  // 2 left   → approach
+  { rx:   0, ry: -90 },  // 3 right  → work
   { rx:  90, ry:   0 },  // 4 top    → security
   { rx: -90, ry:   0 },  // 5 bottom → contact
 ]
@@ -161,12 +161,15 @@ function easeInOutCubic(t: number): number {
 }
 
 /**
- * Clamp X rotation during drag/inertia.
+ * Clamp X rotation during drag.
  * Staying within ±88° prevents the disorienting flip that occurs when
  * free rotation crosses the ±90° gimbal point.
  * Keyboard 90° steps are NOT clamped — they jump directly to valid snap targets.
  */
 const RX_LIMIT = 88
+
+/** Pointer move distance (px) beyond which a gesture is classified as a drag. */
+const DRAG_THRESHOLD = 8
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -181,7 +184,7 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
 
   // ── Refs: mutable values used inside RAF callbacks ───────────────────────────
   // rot mirrors state but is always up-to-date inside closures.
-  const rot        = useRef({ x: -15, y: 30 })
+  const rot          = useRef({ x: -15, y: 30 })
   // Direct reference to the 3D inner element — written during drag to avoid
   // React re-renders on every pointer-move event.
   const cubeInnerRef = useRef<HTMLDivElement>(null)
@@ -190,17 +193,19 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
   const activeFaceIdxRef = useRef(computeActiveFaceIdx(-15, 30))
 
   // Drag tracking (all refs — pointer movement must NOT cause re-renders)
-  const dragging   = useRef(false)
-  const dragOrigin = useRef({ mx: 0, my: 0, rx: 0, ry: 0 })
-  const lastPos    = useRef({ x: 0, y: 0 })
-  const vel        = useRef({ x: 0, y: 0 })
-  const dragDist   = useRef(0)
+  const dragging       = useRef(false)
+  const dragOrigin     = useRef({ mx: 0, my: 0, rx: 0, ry: 0 })
+  const lastPos        = useRef({ x: 0, y: 0 })
+  const dragDist       = useRef(0)
+  // Lock that prevents the browser's synthetic click event (which fires after
+  // pointerup) from triggering navigation immediately after a drag ends.
+  const postDragLocked = useRef(false)
+  const postDragTimer  = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // RAF handles
-  const rafInertia = useRef(0)
-  const rafIdle    = useRef(0)
-  const rafSnap    = useRef(0)
-  const idleTimer  = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const rafIdle   = useRef(0)
+  const rafSnap   = useRef(0)
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Media preference
   const reducedMotion = useRef(false)
@@ -226,7 +231,7 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
 
   /**
    * Write rotation to the DOM AND to React state.
-   * Use for all RAF-driven animations (inertia, idle, snap) where we need
+   * Use for all RAF-driven animations (idle, snap) where we need
    * the active-face indicator to stay in sync.
    */
   function applyRotation(rx: number, ry: number) {
@@ -267,12 +272,15 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
   const stopAllRef = useRef<() => void>(() => { /* filled below */ })
 
   stopAllRef.current = () => {
-    cancelAnimationFrame(rafInertia.current)
     cancelAnimationFrame(rafIdle.current)
     cancelAnimationFrame(rafSnap.current)
     if (idleTimer.current) {
       clearTimeout(idleTimer.current)
       idleTimer.current = null
+    }
+    if (postDragTimer.current) {
+      clearTimeout(postDragTimer.current)
+      postDragTimer.current = null
     }
   }
 
@@ -314,46 +322,6 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // ── Inertia ──────────────────────────────────────────────────────────────────
-  function startInertia() {
-    stopAllRef.current()
-    const tick = () => {
-      vel.current.x *= 0.82
-      vel.current.y *= 0.82
-
-      if (Math.abs(vel.current.x) < 0.05 && Math.abs(vel.current.y) < 0.05) {
-        startIdleRef.current()
-        return
-      }
-
-      // Clamp X rotation; reflect velocity at boundary for natural damping
-      const nextRx = rot.current.x + vel.current.x
-      if (nextRx > RX_LIMIT) {
-        rot.current.x = RX_LIMIT
-        vel.current.x = 0
-      } else if (nextRx < -RX_LIMIT) {
-        rot.current.x = -RX_LIMIT
-        vel.current.x = 0
-      } else {
-        rot.current.x = nextRx
-      }
-      rot.current.y += vel.current.y
-
-      // Direct DOM write first; update React state only on face change.
-      const rx = rot.current.x; const ry = rot.current.y
-      if (cubeInnerRef.current) {
-        cubeInnerRef.current.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`
-      }
-      const newIdx = computeActiveFaceIdxHysteresis(rx, ry, activeFaceIdxRef.current)
-      if (newIdx !== activeFaceIdxRef.current) {
-        activeFaceIdxRef.current = newIdx
-        setRotX(rx); setRotY(ry)
-      }
-      rafInertia.current = requestAnimationFrame(tick)
-    }
-    rafInertia.current = requestAnimationFrame(tick)
-  }
-
   // ── Snap-to-face animation ────────────────────────────────────────────────────
   function snapToFace(faceIdx: number) {
     stopAllRef.current()
@@ -366,6 +334,7 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
 
     if (reducedMotion.current) {
       applyRotation(toX, toY)
+      activeFaceIdxRef.current = faceIdx
       startIdleRef.current()
       return
     }
@@ -381,6 +350,7 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
       if (t < 1) {
         rafSnap.current = requestAnimationFrame(tick)
       } else {
+        activeFaceIdxRef.current = faceIdx
         startIdleRef.current()
       }
     }
@@ -395,7 +365,6 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
     dragDist.current   = 0
     dragOrigin.current = { mx: e.clientX, my: e.clientY, rx: rot.current.x, ry: rot.current.y }
     lastPos.current    = { x: e.clientX, y: e.clientY }
-    vel.current        = { x: 0, y: 0 }
     ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
   }
 
@@ -405,7 +374,6 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
     const dx = e.clientX - lastPos.current.x
     const dy = e.clientY - lastPos.current.y
     dragDist.current += Math.hypot(dx, dy)
-    vel.current = { x: dy * 0.30, y: dx * 0.30 }
     lastPos.current = { x: e.clientX, y: e.clientY }
 
     // Clamp X so free drag cannot cross the ±90° gimbal point.
@@ -424,18 +392,21 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
   function onPointerUp() {
     if (!dragging.current) return
     dragging.current = false
-    // Sync active face ref and state after drag ends.
-    const newIdx = computeActiveFaceIdxHysteresis(
-      rot.current.x, rot.current.y, activeFaceIdxRef.current
-    )
-    activeFaceIdxRef.current = newIdx
-    setRotX(rot.current.x)
-    setRotY(rot.current.y)
-    // Skip inertia for users who prefer reduced motion — go straight to idle.
-    if (reducedMotion.current) {
-      startIdleRef.current()
+
+    if (dragDist.current >= DRAG_THRESHOLD) {
+      // Was a drag — snap to nearest face; lock click for 200 ms to prevent
+      // the browser's synthetic click event from triggering navigation.
+      postDragLocked.current = true
+      if (postDragTimer.current) clearTimeout(postDragTimer.current)
+      postDragTimer.current = setTimeout(() => {
+        postDragLocked.current = false
+      }, 200)
+      const snapIdx = computeActiveFaceIdx(rot.current.x, rot.current.y)
+      snapToFace(snapIdx)
     } else {
-      startInertia()
+      // Was a tap — let the click event on the face button handle navigation.
+      // Restart idle as a fallback for taps that land on the scene background.
+      startIdleRef.current()
     }
   }
 
@@ -528,17 +499,18 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
                   onMouseEnter={() => onFaceHover?.(face.id)}
                   onTouchStart={() => onFaceHover?.(face.id)}
                   onClick={() => {
-                    if (dragDist.current >= 6) return
+                    // Suppress click immediately after a drag ends.
+                    if (postDragLocked.current) return
+                    if (dragDist.current >= DRAG_THRESHOLD) return
                     snapToFace(i)
-                    // Open overlay only when the clicked face is already active.
-                    if (isActive) onFaceSelect?.(face.id)
+                    onFaceSelect?.(face.id)
                   }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
                       e.stopPropagation()
                       snapToFace(i)
-                      if (isActive) onFaceSelect?.(face.id)
+                      onFaceSelect?.(face.id)
                     }
                   }}
                 >
