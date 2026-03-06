@@ -9,8 +9,7 @@ import ActiveSectionPanel from '@/components/interactive/ActiveSectionPanel'
 import { useHomePanel } from '@/context/HomePanelContext'
 
 export default function Hero() {
-  const t      = useTranslations('hero')
-  const locale = useLocale()
+  const t = useTranslations('hero')
 
   const { activeFace, toggleFace } = useHomePanel()
   const panelRef = useRef<HTMLDivElement>(null)

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -174,10 +174,7 @@ const DRAG_THRESHOLD = 8
 export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
   const half = size / 2
 
-  const t      = useTranslations('cubeNav')
-  // useLocale is kept for potential future per-locale face customisation;
-  // currently the label text is fully sourced from translations.
-  useLocale()
+  const t = useTranslations('cubeNav')
 
   // ── Rotation state (drives active-face detection and status label) ───────────
   // During drag we bypass these via direct DOM writes to the cube inner element.

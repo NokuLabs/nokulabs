@@ -5,7 +5,6 @@ import About from '@/components/sections/About'
 import Capabilities from '@/components/sections/Capabilities'
 import Approach from '@/components/sections/Approach'
 import Security from '@/components/sections/Security'
-import TrustSignals from '@/components/sections/TrustSignals'
 import Systems from '@/components/sections/Systems'
 import ContactWizard from '@/components/interactive/ContactWizard'
 
