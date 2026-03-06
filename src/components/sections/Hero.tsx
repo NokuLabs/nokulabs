@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import Button from '@/components/ui/Button'
 import CubeNav from '@/components/interactive/CubeNav'
 import type { CubeFace } from '@/components/interactive/CubeNav'
