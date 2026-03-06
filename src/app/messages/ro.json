@@ -1,48 +1,208 @@
 {
-  "nav": {
-    "capabilities": "Capabilități",
-    "approach": "Abordare",
-    "reference": "Lucrări de referință",
-    "contact": "Contact"
-  },
   "hero": {
-    "title": "Software de nivel infrastructură pentru medii operaționale.",
-    "subtitle": "Arhitectăm sisteme pentru organizații unde eșecul are consecințe.",
-    "body": "Dezvoltare custom, automatizări, integrare AI și hardening de securitate pentru operațiuni reglementate și mission-critical.",
-    "ctaPrimary": "Începe o discuție",
-    "ctaSecondary": "Vezi lucrări de referință"
+    "h1": "Software construit pentru medii care nu pot e\u0219ua.",
+    "sub": "Lucr\u0103m cu organiza\u021bii unde oprirea sistemelor este o r\u0103spundere, nu o statistic\u0103.",
+    "body": "Dezvoltare custom, automatiz\u0103ri, integrare AI \u015fi hardening de securitate. Livrate cu rigoarea pe care opera\u021biunile reglementate \u015fi mission-critical o impun.",
+    "ctaPrimary": "Ini\u021bia\u021bi colaborarea",
+    "ctaSecondary": "Consulta\u021bi abordarea",
+    "trustLine": "R\u0103spuns direct \u00een 24 de ore.",
+    "secondTrustLine": "F\u0103r\u0103 intermediari. F\u0103r\u0103 obliga\u021bii."
   },
-  "engagement": {
-    "title": "Solicită un Architecture Review.",
-    "p1": "Acesta este un filtru de calificare — nu un formular generic. Analizăm contextul, identificăm riscuri și revenim cu un pas recomandat.",
-    "p2": "Timp estimat de răspuns: 24–48 ore. Dacă cererea e urgentă, menționează în trimitere."
+
+  "capabilities": {
+    "label": "Capabilit\u0103\u021bi",
+    "title": "Construit pentru medii cu \u00eencredere ridicat\u0103 \u015fi risc real.",
+    "systemsArch": {
+      "title": "Arhitectur\u0103 de sisteme",
+      "description": "Design infrastructur\u0103, integrare, roadmap tehnic \u015fi decizii de platform\u0103."
+    },
+    "automation": {
+      "title": "Inginerie de automatiz\u0103ri",
+      "description": "Digitalizare procese, orchestrare workflow, tool-uri opera\u021bionale \u015fi integrare API."
+    },
+    "aiWorkflow": {
+      "title": "Integrare AI \u00een fluxuri",
+      "description": "Automatizare pipeline, integrare modele, evaluare risc \u015fi operare \u00een sisteme existente."
+    },
+    "securityHardening": {
+      "title": "Hardening de securitate",
+      "description": "Threat modeling, control acces (RBAC), audit logging \u015fi preg\u0103tire pentru conformitate."
+    }
   },
-  "form": {
-    "progress": "Filtru de calificare • Pasul {step} din 3",
-    "response": "Răspuns: 24–48h",
-    "orgLabel": "Organizație / Instituție",
-    "orgPlaceholder": "ex.: Primărie / Autoritate publică / Companie privată",
-    "emailLabel": "Email de serviciu",
-    "emailPlaceholder": "nume@organizatie.tld",
-    "emailHint": "Email personal este acceptat (filtru soft), dar email-ul organizației are prioritate.",
-    "continue": "Continuă",
-    "needOrgEmail": "Completează organizația și un email valid ca să continui.",
+
+  "approach": {
+    "label": "Abordare",
+    "headline": "Livrare orientat\u0103 pe arhitectur\u0103.",
+    "constraints": {
+      "title": "Oper\u0103m pe constr\u00e2ngeri",
+      "description": "Proiect\u0103m sub limite opera\u021bionale reale: offline-first, trasabilitate complet\u0103 \u015fi control strict al schimb\u0103rilor."
+    },
+    "failure": {
+      "title": "Inginerie pentru e\u015fec",
+      "description": "Presupunem c\u0103 e\u015fecurile apar \u015fi construim sisteme care degradeaz\u0103 controlat, logheaz\u0103 tot \u015fi se recupereaz\u0103 curat."
+    },
+    "discipline": {
+      "title": "Livrare cu disciplin\u0103",
+      "description": "Scope clar. Livrare determinist\u0103. Documenta\u021bie care rezist\u0103 auditului \u015fi schimb\u0103rii de personal."
+    }
+  },
+
+  "security": {
+    "label": "Securitate",
+    "title": "Hardening-ul de securitate face parte din arhitectur\u0103 \u2014 nu este un add-on.",
+    "item1": "Threat modeling \u015fi mapare de risc",
+    "item2": "Proiectare control acces (RBAC), audit logging \u015fi control al schimb\u0103rilor",
+    "item3": "Criptare la rest, gestionare secrete \u015fi strategii local-only",
+    "item4": "Review al posturii opera\u021bionale de securitate"
+  },
+
+  "about": {
+    "label": "Despre",
+    "headline": "O practică focalizată. Nu o agenție.",
+    "body": "NOKU LABS lucrează direct cu lideri tehnici și factori de decizie din medii reglementate și sensibile operațional. Fără liste mari de clienți. Fără pasare. Livrare precisă și responsabilă.",
+    "directEngagement": {
+      "title": "Implicare directă",
+      "description": "Fără account manageri sau intermediari. Deciziile inginerești sunt luate de inginerii care fac munca."
+    },
+    "smallByDesign": {
+      "title": "Mic prin design",
+      "description": "Numărul limitat de clienți activi asigură că fiecare proiect primește atenție tehnică deplină."
+    },
+    "builtToLast": {
+      "title": "Construit să dureze",
+      "description": "Sisteme pentru care răspundem. Documentația, transferul și suportul post-livrare sunt parte din scope."
+    }
+  },
+
+  "trust": {
+    "label": "Semnale de \u00eencredere",
+    "headline": "Construit pentru medii unde erorile au consecin\u021be.",
+    "audit": {
+      "title": "Preg\u0103tit pentru audit din design",
+      "description": "Loguri imutabile, RBAC \u015fi output determinist integrate direct \u00een workflow."
+    },
+    "operationalDiscipline": {
+      "title": "Disciplin\u0103 opera\u021bional\u0103",
+      "description": "Scope clar, responsabilitate clar\u0103 \u015fi documenta\u021bie care rezist\u0103 sub analiz\u0103."
+    },
+    "local": {
+      "title": "Capabilitate local-first",
+      "description": "Sisteme care continu\u0103 s\u0103 func\u021bioneze c\u00e2nd re\u021beaua cade sau constr\u00e2ngerile cresc."
+    }
+  },
+
+  "systems": {
+    "label": "Referin\u021be",
+    "title": "Platform\u0103 de emitere \u015fi arhivare pentru fluxuri reglementate.",
+    "body": "Sisteme construite pentru opera\u021biuni cu cerin\u021be stricte: date local-first, randare determinist\u0103 a template-urilor, export PDF, arhivare \u015fi jurnalizare auditabil\u0103.",
+    "cta": "Discut\u0103 un sistem similar"
+  },
+
+  "footer": {
+    "tagline": "Sisteme orientate pe arhitectur\u0103. Construite s\u0103 reziste sub analiz\u0103.",
+    "navTitle": "Navigare",
+    "legalPrivacy": "Confiden\u021bialitate",
+    "legalTerms": "Termeni",
+    "imprint": "NOKU LABS",
+    "langLabel": "Limb\u0103",
+    "langNote": "Limba se aplic\u0103 instant, f\u0103r\u0103 refresh.",
+    "nav": {
+      "about": "Despre",
+      "capabilities": "Capabilit\u0103\u021bi",
+      "approach": "Abordare",
+      "work": "Referin\u021be",
+      "security": "Securitate",
+      "contact": "Contact"
+    }
+  },
+
+  "header": {
+    "homeLabel": "NOKU LABS acas\u0103",
+    "switchLang": "Schimb\u0103 limba"
+  },
+
+  "cubeNav": {
+    "ariaGroup": "Navigare 3D. Trage\u021bi sau folosi\u021bi s\u0103ge\u021bile pentru a roti cubul.",
+    "ariaStatusLabel": "Fa\u021b\u0103 activ\u0103: {face}",
+    "ariaActivePrefix": "Activ",
+    "ariaFaceActive": "{label} \u2014 fa\u021b\u0103 activ\u0103, apas\u0103 pentru a selecta",
+    "faces": {
+      "about": "DESPRE",
+      "capabilities": "SERVICII",
+      "approach": "ABORDARE",
+      "work": "REFERIN\u021ee",
+      "security": "SECURITATE",
+      "contact": "CONTACT"
+    }
+  },
+
+  "wizard": {
+    "stepOf": "Pasul {n} din 3",
+    "namePh": "Prenume",
+    "surnamePh": "Nume de familie",
+    "companyPh": "Companie (op\u021bional)",
+    "emailPh": "Email de serviciu",
+    "phonePh": "Telefon (op\u021bional)",
+    "emailErr": "Introduce\u021bi un email valid ca s\u0103 continui.",
+    "projectTypeLabel": "Tipul proiectului",
     "budgetLabel": "Buget",
-    "timelineLabel": "Orizont de timp",
-    "summaryLabel": "Context",
-    "summaryMin": "minim {min} caractere",
-    "summaryPlaceholder": "Pentru ce mediu este? Stack curent? Constrângeri? Riscuri? Cum arată succesul?",
-    "summaryHint": "Răspundem mai rapid când există constrângeri clare, scope și semnale de risc.",
-    "back": "Înapoi",
-    "submit": "Trimite pentru analiză",
-    "submitting": "Se trimite…",
-    "receivedTitle": "Primit.",
-    "receivedBody": "Cererea ta e în coadă. Dacă avem nevoie de clarificări, revenim pe email.",
-    "receivedWindow": "Fereastră tipică de răspuns: 24–48 ore.",
-    "missingEndpoint": "Lipsește endpoint-ul (NEXT_PUBLIC_LEAD_ENDPOINT).",
-    "rejected": "Trimiterea a fost respinsă. Încearcă din nou.",
-    "completeForm": "Completează formularul. Contextul trebuie să aibă minim {min} caractere.",
-    "failed": "Trimiterea a eșuat. Încearcă din nou.",
-    "networkError": "Eroare de rețea. Încearcă din nou."
+    "timelineLabel": "Termen",
+    "notesLabel": "Note tehnice / design (op\u021bional)",
+    "notesPh": "Stack, constr\u00e2ngeri, riscuri, criterii de succes...",
+    "additionalLabel": "Altceva de ad\u0103ugat?",
+    "additionalPh": "Alte constr\u00e2ngeri, \u00eentreb\u0103ri, context... (op\u021bional)",
+    "continue": "Continu\u0103",
+    "back": "\u00cenapoí",
+    "submit": "Trimite",
+    "submitting": "Se trimite\u2026",
+    "doneTitle": "Mul\u021bumim.",
+    "doneBody": "Revenim \u00een 24h.",
+    "projectTypes": {
+      "custom-development": "Dezvoltare custom",
+      "automation": "Automatiz\u0103ri",
+      "ai-integration": "Integrare AI",
+      "security-hardening": "Hardening securitate",
+      "system-architecture": "Arhitectur\u0103 sistem",
+      "other": "Altele / nu \u015ftiu"
+    }
+  },
+
+  "meta": {
+    "home": {
+      "title": "NOKU LABS \u2013 Software de nivel infrastructur\u0103 pentru medii opera\u021bionale",
+      "description": "Arhitect\u0103m sisteme pentru organiza\u021bii unde e\u015fecul are consecin\u021be. Dezvoltare custom, automatiz\u0103ri \u015fi hardening de securitate pentru opera\u021biuni reglementate."
+    },
+    "about": {
+      "title": "Despre \u2014 NOKU LABS",
+      "description": "O practic\u0103 inginereasc\u0103 focalizat\u0103, care lucreaz\u0103 direct cu lideri tehnici din medii reglementate \u015fi mission-critical. Implicare direct\u0103, f\u0103r\u0103 intermediari \u015fi sisteme construite s\u0103 dureze."
+    },
+    "capabilities": {
+      "title": "Capabilit\u0103\u021bi \u2014 NOKU LABS",
+      "description": "Arhitectur\u0103 sisteme, automatiz\u0103ri, integrare AI \u015fi hardening de securitate pentru medii reglementate \u015fi mission-critical."
+    },
+    "approach": {
+      "title": "Abordare \u2014 NOKU LABS",
+      "description": "Livrare orientat\u0103 pe arhitectur\u0103. Oper\u0103m pe constr\u00e2ngeri, proiect\u0103m pentru e\u015fec \u015fi livr\u0103m cu disciplin\u0103."
+    },
+    "work": {
+      "title": "Referin\u021be \u2014 NOKU LABS",
+      "description": "Platforme de emitere \u015fi arhivare pentru fluxuri reglementate. Date local-first, randare determinist\u0103 \u015fi jurnalizare auditabil\u0103."
+    },
+    "security": {
+      "title": "Securitate \u2014 NOKU LABS",
+      "description": "Hardening de securitate ca parte din arhitectur\u0103. Threat modeling, RBAC, audit logging \u015fi review al posturii opera\u021bionale."
+    },
+    "contact": {
+      "title": "Contact \u2014 NOKU LABS",
+      "description": "Ini\u021bia\u021bi o colaborare. R\u0103spuns direct \u00een 24 de ore. F\u0103r\u0103 intermediari, f\u0103r\u0103 obliga\u021bii."
+    },
+    "privacy": {
+      "title": "Politic\u0103 de confiden\u021bialitate \u2014 NOKU LABS",
+      "description": "Cum gestioneaz\u0103 NOKU LABS informa\u021biile furnizate prin acest website."
+    },
+    "terms": {
+      "title": "Termeni \u015fi condi\u021bii \u2014 NOKU LABS",
+      "description": "Termenii care guverneaz\u0103 accesul la website-ul informa\u021bional NOKU LABS."
+    }
   }
 }

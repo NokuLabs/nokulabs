@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -12,11 +13,8 @@ export type CubeFace =
   | 'security'
   | 'contact'
 
-type Lang = 'ro' | 'en'
-
 export interface CubeNavProps {
   onFaceSelect?: (face: CubeFace) => void
-  onFaceHover?: (face: CubeFace) => void
   /** Side length in px (default 280). */
   size?: number
 }
@@ -30,13 +28,13 @@ export interface CubeNavProps {
 //
 // If you re-order FACES you MUST re-order FACE_NORMALS and SNAP_TARGETS too.
 
-const FACES: { id: CubeFace; en: string; ro: string; tag: string }[] = [
-  { id: 'about',        en: 'ABOUT',        ro: 'DESPRE',       tag: '01' },
-  { id: 'capabilities', en: 'CAPABILITIES', ro: 'SERVICII',     tag: '02' },
-  { id: 'approach',     en: 'APPROACH',     ro: 'ABORDARE',     tag: '03' },
-  { id: 'work',         en: 'WORK',         ro: 'REFERINȚE',    tag: '04' },
-  { id: 'security',     en: 'SECURITY',     ro: 'SECURITATE',   tag: '05' },
-  { id: 'contact',      en: 'CONTACT',      ro: 'CONTACT',      tag: '06' },
+const FACES: { id: CubeFace; tag: string }[] = [
+  { id: 'about',        tag: '01' },
+  { id: 'capabilities', tag: '02' },
+  { id: 'approach',     tag: '03' },
+  { id: 'work',         tag: '04' },
+  { id: 'security',     tag: '05' },
+  { id: 'contact',      tag: '06' },
 ]
 
 const FACE_SLOTS = ['front', 'back', 'left', 'right', 'top', 'bottom'] as const
@@ -173,14 +171,18 @@ const DRAG_THRESHOLD = 8
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeNavProps) {
+export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
   const half = size / 2
+
+  const t      = useTranslations('cubeNav')
+  // useLocale is kept for potential future per-locale face customisation;
+  // currently the label text is fully sourced from translations.
+  useLocale()
 
   // ── Rotation state (drives active-face detection and status label) ───────────
   // During drag we bypass these via direct DOM writes to the cube inner element.
   const [rotX, setRotX] = useState(-15)
   const [rotY, setRotY] = useState(30)
-  const [lang, setLang] = useState<Lang>('ro')
 
   // ── Refs: mutable values used inside RAF callbacks ───────────────────────────
   // rot mirrors state but is always up-to-date inside closures.
@@ -213,6 +215,8 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
   // Active face is derived from rotation — computed synchronously in render.
   const activeFaceIdx = computeActiveFaceIdx(rotX, rotY)
   const activeFace    = FACES[activeFaceIdx]
+  // Translation of the active face label for status display
+  const activeFaceLabel = t(`faces.${activeFace.id}` as any)
 
   // ── Rotation update helpers ──────────────────────────────────────────────────
 
@@ -251,19 +255,6 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
     const onChange = (e: MediaQueryListEvent) => { reducedMotion.current = e.matches }
     mq.addEventListener('change', onChange)
     return () => mq.removeEventListener('change', onChange)
-  }, [])
-
-  // ── Language sync ────────────────────────────────────────────────────────────
-  useEffect(() => {
-    const saved = localStorage.getItem('noku_lang')
-    if (saved === 'en' || saved === 'ro') setLang(saved)
-
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent<{ lang?: Lang }>).detail
-      if (detail?.lang === 'en' || detail?.lang === 'ro') setLang(detail.lang)
-    }
-    window.addEventListener('noku-lang-change', handler)
-    return () => window.removeEventListener('noku-lang-change', handler)
   }, [])
 
   // ── Animation helpers ────────────────────────────────────────────────────────
@@ -454,11 +445,7 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
           onKeyDown={onKeyDown}
           tabIndex={0}
           role="group"
-          aria-label={
-            lang === 'ro'
-              ? 'Navigare 3D. Trageți sau folosiți săgețile pentru a roti cubul.'
-              : '3D navigation cube. Drag or use arrow keys to rotate.'
-          }
+          aria-label={t('ariaGroup')}
         >
           {/* Cube inner — establishes preserve-3d context.
               ref allows direct transform writes during drag (no React re-render). */}
@@ -474,7 +461,7 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
           >
             {FACES.map((face, i) => {
               const slot     = FACE_SLOTS[i]
-              const label    = lang === 'ro' ? face.ro : face.en
+              const label    = t(`faces.${face.id}` as any)
               const isActive = i === activeFaceIdx
 
               return (
@@ -492,12 +479,10 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
                   tabIndex={0}
                   aria-label={
                     isActive
-                      ? `${label} — ${lang === 'ro' ? 'față activă, apasă pentru a selecta' : 'active face, press to select'}`
+                      ? t('ariaFaceActive', { label })
                       : label
                   }
                   aria-pressed={isActive}
-                  onMouseEnter={() => onFaceHover?.(face.id)}
-                  onTouchStart={() => onFaceHover?.(face.id)}
                   onClick={() => {
                     // Suppress click immediately after a drag ends.
                     if (postDragLocked.current) return
@@ -531,18 +516,14 @@ export default function CubeNav({ onFaceSelect, onFaceHover, size = 280 }: CubeN
         className="cube-status"
         aria-live="polite"
         aria-atomic="true"
-        aria-label={
-          lang === 'ro'
-            ? `Față activă: ${activeFace.ro}`
-            : `Active face: ${activeFace.en}`
-        }
+        aria-label={t('ariaStatusLabel', { face: activeFaceLabel })}
       >
         <span className="cube-status-prefix" aria-hidden="true">
-          {lang === 'ro' ? 'Activ' : 'Active'}
+          {t('ariaActivePrefix')}
         </span>
         <span className="cube-status-dash" aria-hidden="true">─</span>
         <span className="cube-status-name" aria-hidden="true">
-          {lang === 'ro' ? activeFace.ro : activeFace.en}
+          {activeFaceLabel}
         </span>
       </div>
 

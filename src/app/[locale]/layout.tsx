@@ -4,13 +4,15 @@ import '../globals.css'
 
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import Hero from '@/components/sections/Hero'
 import SectionTransition from '@/components/layout/SectionTransition'
+import { HomePanelProvider } from '@/context/HomePanelContext'
 
 import { NextIntlClientProvider } from 'next-intl'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { locales, type Locale } from '../i18n'
+
+const SITE_URL = 'https://nokulabs.com'
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
@@ -19,10 +21,33 @@ export function generateStaticParams() {
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap', preload: true })
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono', display: 'swap', preload: true })
 
-export const metadata: Metadata = {
-  title: 'NOKU LABS – Infrastructure-grade software for operational environments',
-  description:
-    'We architect systems for organizations where failure has consequences. Custom development, automation engineering, and security hardening for regulated and mission-critical operations.'
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'meta.home' })
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      type: 'website',
+      url: `${SITE_URL}/${locale}`,
+    },
+    alternates: {
+      canonical: `${SITE_URL}/${locale}`,
+      languages: {
+        en: `${SITE_URL}/en`,
+        ro: `${SITE_URL}/ro`,
+        'x-default': `${SITE_URL}/ro`,
+      },
+    },
+  }
 }
 
 export default async function RootLayout({
@@ -47,13 +72,13 @@ export default async function RootLayout({
         <a href="#main-content" className="skip-link">Skip to content</a>
 
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Header />
-          {/* Hero renders here so it persists across route changes without remounting */}
-          <Hero />
-          <SectionTransition>
-            <main id="main-content" role="main">{children}</main>
-          </SectionTransition>
-          <Footer />
+          <HomePanelProvider>
+            <Header />
+            <SectionTransition>
+              <main id="main-content" role="main">{children}</main>
+            </SectionTransition>
+            <Footer />
+          </HomePanelProvider>
         </NextIntlClientProvider>
       </body>
     </html>

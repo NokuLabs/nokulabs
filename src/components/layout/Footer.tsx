@@ -1,177 +1,123 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import type { NavItem } from '@/types'
+import { useLocale, useTranslations } from 'next-intl'
+import { usePathname } from 'next/navigation'
+import { useHomePanel } from '@/context/HomePanelContext'
+import type { CubeFace } from '@/components/interactive/CubeNav'
 
-type Lang = 'en' | 'ro'
-const STORAGE_KEY = 'noku_lang'
+// All six cube faces appear in the footer nav for full navigation coherence.
+// Values match CubeFace exactly so the homepage intercept can cast directly.
+const NAV_ROUTES = ['about', 'capabilities', 'approach', 'work', 'security', 'contact'] as const
+type NavRoute = (typeof NAV_ROUTES)[number]
 
-function getInitialLang(): Lang {
-  if (typeof window === 'undefined') return 'ro'
-  const saved = window.localStorage.getItem(STORAGE_KEY)
-  if (saved === 'ro' || saved === 'en') return saved
-  const prefersRo = window.navigator.language?.toLowerCase().startsWith('ro')
-  return prefersRo ? 'ro' : 'en'
-}
-
-function setLang(lang: Lang) {
-  if (typeof window === 'undefined') return
-  window.localStorage.setItem(STORAGE_KEY, lang)
-  window.dispatchEvent(new CustomEvent('noku-lang-change', { detail: { lang } }))
-}
-
-const NAV: Record<Lang, NavItem[]> = {
-  en: [
-    { label: 'Capabilities', href: '#capabilities' },
-    { label: 'Approach', href: '#approach' },
-    { label: 'Reference Work', href: '#systems' },
-    { label: 'Contact', href: '#engagement' },
-  ],
-  ro: [
-    { label: 'Capabilități', href: '#capabilities' },
-    { label: 'Abordare', href: '#approach' },
-    { label: 'Referințe', href: '#systems' },
-    { label: 'Contact', href: '#engagement' },
-  ],
-}
-
-const COPY: Record<
-  Lang,
-  {
-    tagline: string
-    navTitle: string
-    legalPrivacy: string
-    legalTerms: string
-    imprint: string
-    langLabel: string
-    ro: string
-    en: string
+function swapLocaleInPath(pathname: string, next: string): string {
+  if (!pathname) return `/${next}`
+  const parts = pathname.split('/')
+  if (parts.length >= 2 && (parts[1] === 'ro' || parts[1] === 'en')) {
+    parts[1] = next
+    return parts.join('/') || `/${next}`
   }
-> = {
-  en: {
-    tagline: 'Architecture-first systems. Built to hold under scrutiny.',
-    navTitle: 'Navigation',
-    legalPrivacy: 'Privacy',
-    legalTerms: 'Terms',
-    imprint: 'NOKU LABS',
-    langLabel: 'Language',
-    ro: 'RO',
-    en: 'EN',
-  },
-  ro: {
-    tagline: 'Sisteme orientate pe arhitectură. Construite să reziste sub analiză.',
-    navTitle: 'Navigare',
-    legalPrivacy: 'Confidențialitate',
-    legalTerms: 'Termeni',
-    imprint: 'NOKU LABS',
-    langLabel: 'Limbă',
-    ro: 'RO',
-    en: 'EN',
-  },
+  return `/${next}${pathname.startsWith('/') ? pathname : `/${pathname}`}`
 }
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
-  const [lang, setLangState] = useState<Lang>('ro')
+  const t           = useTranslations('footer')
+  const locale      = useLocale()
+  const pathname    = usePathname()
 
-  useEffect(() => {
-    setLangState(getInitialLang())
-    const onLang = (e: Event) => {
-      const detail = (e as CustomEvent).detail as { lang?: Lang } | undefined
-      if (detail?.lang === 'en' || detail?.lang === 'ro') setLangState(detail.lang)
-      else setLangState(getInitialLang())
-    }
-    window.addEventListener('noku-lang-change', onLang as EventListener)
-    return () => window.removeEventListener('noku-lang-change', onLang as EventListener)
-  }, [])
+  const { toggleFace } = useHomePanel()
 
-  const c = useMemo(() => COPY[lang], [lang])
-  const navItems = useMemo(() => NAV[lang], [lang])
+  // /ro → 1 segment → home; /ro/capabilities → 2 segments → sub-route
+  const isHome = pathname.split('/').filter(Boolean).length <= 1
+
+  function handleNavClick(route: NavRoute, e: React.MouseEvent<HTMLAnchorElement>) {
+    if (!isHome) return
+    e.preventDefault()
+    toggleFace(route as CubeFace)
+    // Panel scroll is handled by Hero's useEffect watching activeFace.
+  }
 
   return (
     <footer className="bg-surface border-t border-border">
       <div className="max-w-content mx-auto px-6 lg:px-12 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
           <div>
-            <h3 className="text-h3-mobile md:text-h3-desktop mb-4">{c.imprint}</h3>
-            <p className="text-body text-secondary max-w-md">{c.tagline}</p>
+            <h3 className="text-h3-mobile md:text-h3-desktop mb-4">{t('imprint')}</h3>
+            <p className="text-body text-secondary max-w-md">{t('tagline')}</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-10 sm:justify-end">
+            {/* ── Navigation ──────────────────────────────────────────── */}
             <div>
-              <h4 className="text-h4 mb-4">{c.navTitle}</h4>
+              <h4 className="text-h4 mb-4">{t('navTitle')}</h4>
               <ul className="space-y-3">
-                {navItems.map((item) => (
-                  <li key={item.href}>
+                {NAV_ROUTES.map((route) => (
+                  <li key={route}>
+                    {/*
+                      Always render an <a> with a valid href so the link works on
+                      sub-pages, is right-click-copyable, and is crawlable.
+                      On the homepage the click is intercepted to open the inline panel.
+                    */}
                     <a
-                      href={item.href}
+                      href={`/${locale}/${route}`}
+                      onClick={(e) => handleNavClick(route, e)}
                       className="text-body text-secondary hover:text-primary transition-colors"
                     >
-                      {item.label}
+                      {t(`nav.${route}` as any)}
                     </a>
                   </li>
                 ))}
               </ul>
             </div>
 
+            {/* ── Language switcher ────────────────────────────────────── */}
             <div>
-              <h4 className="text-h4 mb-4">{c.langLabel}</h4>
+              <h4 className="text-h4 mb-4">{t('langLabel')}</h4>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setLang('ro')}
-                  className={[
-                    'px-3 py-2 rounded-xl border border-border text-small transition-colors',
-                    lang === 'ro'
-                      ? 'bg-background text-primary'
-                      : 'bg-transparent text-secondary hover:text-primary',
-                  ].join(' ')}
-                  aria-pressed={lang === 'ro'}
-                >
-                  {c.ro}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLang('en')}
-                  className={[
-                    'px-3 py-2 rounded-xl border border-border text-small transition-colors',
-                    lang === 'en'
-                      ? 'bg-background text-primary'
-                      : 'bg-transparent text-secondary hover:text-primary',
-                  ].join(' ')}
-                  aria-pressed={lang === 'en'}
-                >
-                  {c.en}
-                </button>
+                {(['ro', 'en'] as const).map((l) => (
+                  <a
+                    key={l}
+                    href={swapLocaleInPath(pathname, l)}
+                    className={[
+                      'px-3 py-2 rounded-xl border border-border text-small transition-colors',
+                      locale === l
+                        ? 'bg-background text-primary'
+                        : 'bg-transparent text-secondary hover:text-primary',
+                    ].join(' ')}
+                    aria-current={locale === l ? 'true' : undefined}
+                  >
+                    {l.toUpperCase()}
+                  </a>
+                ))}
               </div>
 
               <p className="text-small text-muted mt-3 max-w-[26ch]">
-                {lang === 'ro'
-                  ? 'Limba se aplică instant, fără refresh.'
-                  : 'Applies instantly, no refresh.'}
+                {t('langNote')}
               </p>
             </div>
           </div>
         </div>
 
+        {/* ── Legal bar ───────────────────────────────────────────────── */}
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-small text-muted">
-              {currentYear} {c.imprint}
+              {currentYear} {t('imprint')}
             </p>
 
             <div className="flex gap-6">
               <a
-                href="/privacy"
+                href={`/${locale}/privacy`}
                 className="text-small text-muted hover:text-secondary transition-colors"
               >
-                {c.legalPrivacy}
+                {t('legalPrivacy')}
               </a>
               <a
-                href="/terms"
+                href={`/${locale}/terms`}
                 className="text-small text-muted hover:text-secondary transition-colors"
               >
-                {c.legalTerms}
+                {t('legalTerms')}
               </a>
             </div>
           </div>

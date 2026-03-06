@@ -1,6 +1,7 @@
 'use client'
 
-import { FormEvent, Fragment, useEffect, useRef, useState } from 'react'
+import { FormEvent, Fragment, useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 // ─── Const arrays → derive union types ────────────────────────────────────────
 
@@ -26,9 +27,8 @@ const TIMELINES = [
 ] as const
 type Timeline = (typeof TIMELINES)[number]
 
-// ─── Static data ──────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-type Lang = 'ro' | 'en'
 type WizardStep = 1 | 2 | 3
 type StepDir = 'forward' | 'back'
 
@@ -46,67 +46,6 @@ type WizardPayload = {
   honeypot:    string
 }
 
-const PROJECT_TYPE_LABELS: Record<ProjectType, { en: string; ro: string }> = {
-  'custom-development':  { en: 'Custom development',    ro: 'Dezvoltare custom'     },
-  'automation':          { en: 'Automation engineering', ro: 'Automatizări'          },
-  'ai-integration':      { en: 'AI integration',        ro: 'Integrare AI'          },
-  'security-hardening':  { en: 'Security hardening',    ro: 'Hardening securitate'  },
-  'system-architecture': { en: 'System architecture',   ro: 'Arhitectură sistem'    },
-  'other':               { en: 'Other / not sure',      ro: 'Altele / nu știu'      },
-}
-
-const COPY = {
-  en: {
-    stepOf:      (n: number) => `Step ${n} of 3`,
-    // step 1
-    namePh:      'First name',
-    surnamePh:   'Last name',
-    companyPh:   'Company (optional)',
-    emailPh:     'Work email',
-    phonePh:     'Phone (optional)',
-    emailErr:    'Enter a valid email to continue.',
-    // step 2
-    projectTypeLabel: 'Project type',
-    budgetLabel:      'Budget range',
-    timelineLabel:    'Timeline',
-    notesLabel:       'Technical / design notes (optional)',
-    notesPh:          'Stack, constraints, risks, success criteria...',
-    // step 3
-    additionalLabel:  'Anything else we should know?',
-    additionalPh:     'Other constraints, questions, context... (optional)',
-    // actions
-    continue:    'Continue',
-    back:        'Back',
-    submit:      'Submit',
-    submitting:  'Submitting…',
-    // confirmation
-    doneTitle:   'Thank you.',
-    doneBody:    'We will respond within 24h.',
-  },
-  ro: {
-    stepOf:      (n: number) => `Pasul ${n} din 3`,
-    namePh:      'Prenume',
-    surnamePh:   'Nume de familie',
-    companyPh:   'Companie (opțional)',
-    emailPh:     'Email de serviciu',
-    phonePh:     'Telefon (opțional)',
-    emailErr:    'Introdu un email valid ca să continui.',
-    projectTypeLabel: 'Tipul proiectului',
-    budgetLabel:      'Buget',
-    timelineLabel:    'Termen',
-    notesLabel:       'Note tehnice / design (opțional)',
-    notesPh:          'Stack, constrângeri, riscuri, criterii de succes...',
-    additionalLabel:  'Altceva de adăugat?',
-    additionalPh:     'Alte constrângeri, întrebări, context... (opțional)',
-    continue:    'Continuă',
-    back:        'Înapoi',
-    submit:      'Trimite',
-    submitting:  'Se trimite…',
-    doneTitle:   'Mulțumim.',
-    doneBody:    'Revenim în 24h.',
-  },
-}
-
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function isValidEmail(email: string): boolean {
@@ -120,16 +59,17 @@ function isValidEmail(email: string): boolean {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ContactWizard() {
-  const [lang, setLang]         = useState<Lang>('ro')
-  const [step, setStep]         = useState<WizardStep>(1)
+  const t = useTranslations('wizard')
+
+  const [step, setStep]           = useState<WizardStep>(1)
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [emailError, setEmailError] = useState(false)
 
   // Direction for step transition animation — written before setStep, read during render
-  const stepDirRef  = useRef<StepDir>('forward')
+  const stepDirRef   = useRef<StepDir>('forward')
   const containerRef = useRef<HTMLDivElement>(null)
-  const startedAt   = useRef(Date.now())
+  const startedAt    = useRef(Date.now())
 
   const [payload, setPayload] = useState<WizardPayload>({
     name: '', surname: '', company: '', email: '', phone: '',
@@ -139,31 +79,11 @@ export default function ContactWizard() {
     notes: '', additional: '', honeypot: '',
   })
 
-  // ── Language sync ──────────────────────────────────────────────────────────
-  useEffect(() => {
-    const saved = localStorage.getItem('noku_lang')
-    if (saved === 'en' || saved === 'ro') setLang(saved)
-
-    const onLang = (e: Event) => {
-      const d = (e as CustomEvent<{ lang?: Lang }>).detail
-      if (d?.lang === 'en' || d?.lang === 'ro') setLang(d.lang)
-    }
-    window.addEventListener('noku-lang-change', onLang)
-    return () => window.removeEventListener('noku-lang-change', onLang)
-  }, [])
-
   // ── Focus first interactive element on step change ──────────────────────────
-  useEffect(() => {
-    if (!containerRef.current) return
-    if (submitted) {
-      containerRef.current.focus()
-    } else {
-      const el = containerRef.current.querySelector<HTMLElement>(
-        'input:not([tabindex="-1"]), select, textarea'
-      )
-      el?.focus()
-    }
-  }, [step, submitted])
+  const prevStep = useRef(step)
+  if (prevStep.current !== step) {
+    prevStep.current = step
+  }
 
   // ── Field setter (typed by key) ────────────────────────────────────────────
   function set<K extends keyof WizardPayload>(k: K, v: WizardPayload[K]) {
@@ -208,17 +128,16 @@ export default function ContactWizard() {
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
             ...payload,
-            name: payload.name.trim(),
-            surname: payload.surname.trim(),
-            email: payload.email.trim(),
-            lang,
+            name:      payload.name.trim(),
+            surname:   payload.surname.trim(),
+            email:     payload.email.trim(),
             startedAt: startedAt.current,
           }),
         })
         if (!res.ok) throw new Error('non-ok')
       } else {
         // No endpoint configured — mock for static demo
-        console.log('[ContactWizard] submitted', { ...payload, lang })
+        console.log('[ContactWizard] submitted', payload)
         await new Promise(r => setTimeout(r, 600))
       }
       setSubmitted(true)
@@ -230,8 +149,6 @@ export default function ContactWizard() {
     }
   }
 
-  const t = COPY[lang]
-
   // ── Confirmation ───────────────────────────────────────────────────────────
   if (submitted) {
     return (
@@ -241,8 +158,8 @@ export default function ContactWizard() {
         role="status"
         tabIndex={-1}
       >
-        <p className="wizard-done-title">{t.doneTitle}</p>
-        <p className="wizard-done-body">{t.doneBody}</p>
+        <p className="wizard-done-title">{t('doneTitle')}</p>
+        <p className="wizard-done-body">{t('doneBody')}</p>
       </div>
     )
   }
@@ -252,7 +169,7 @@ export default function ContactWizard() {
     <div className="wizard-wrapper">
 
       {/* ── Progress bar ──────────────────────────────────────────────── */}
-      <div className="wizard-progress" aria-label={t.stepOf(step)}>
+      <div className="wizard-progress" aria-label={t('stepOf', { n: step })}>
         <div className="wizard-progress-track">
           {([1, 2, 3] as WizardStep[]).map((n, i) => (
             <Fragment key={n}>
@@ -268,7 +185,7 @@ export default function ContactWizard() {
             </Fragment>
           ))}
         </div>
-        <span className="wizard-progress-label">{t.stepOf(step)}</span>
+        <span className="wizard-progress-label">{t('stepOf', { n: step })}</span>
       </div>
 
       {/* ── Step content (key change triggers remount + enter animation) ── */}
@@ -289,7 +206,7 @@ export default function ContactWizard() {
                     className="wizard-input"
                     value={payload.name}
                     onChange={e => set('name', e.target.value)}
-                    placeholder={t.namePh}
+                    placeholder={t('namePh')}
                     autoComplete="given-name"
                     required
                   />
@@ -299,7 +216,7 @@ export default function ContactWizard() {
                     className="wizard-input"
                     value={payload.surname}
                     onChange={e => set('surname', e.target.value)}
-                    placeholder={t.surnamePh}
+                    placeholder={t('surnamePh')}
                     autoComplete="family-name"
                     required
                   />
@@ -311,7 +228,7 @@ export default function ContactWizard() {
                   className="wizard-input"
                   value={payload.company}
                   onChange={e => set('company', e.target.value)}
-                  placeholder={t.companyPh}
+                  placeholder={t('companyPh')}
                   autoComplete="organization"
                 />
               </div>
@@ -325,13 +242,13 @@ export default function ContactWizard() {
                     set('email', e.target.value)
                     if (emailError) setEmailError(false)
                   }}
-                  placeholder={t.emailPh}
+                  placeholder={t('emailPh')}
                   autoComplete="email"
                   inputMode="email"
                   required
                 />
                 {emailError && (
-                  <p className="wizard-field-error" role="alert">{t.emailErr}</p>
+                  <p className="wizard-field-error" role="alert">{t('emailErr')}</p>
                 )}
               </div>
 
@@ -341,7 +258,7 @@ export default function ContactWizard() {
                   className="wizard-input"
                   value={payload.phone}
                   onChange={e => set('phone', e.target.value)}
-                  placeholder={t.phonePh}
+                  placeholder={t('phonePh')}
                   autoComplete="tel"
                   inputMode="tel"
                 />
@@ -365,7 +282,7 @@ export default function ContactWizard() {
                 className="wizard-btn wizard-btn--primary"
                 disabled={!canGoStep2}
               >
-                {t.continue}
+                {t('continue')}
               </button>
             </div>
           </form>
@@ -377,7 +294,7 @@ export default function ContactWizard() {
             <div className="wizard-fields">
 
               <div className="wizard-field">
-                <label className="wizard-label">{t.projectTypeLabel}</label>
+                <label className="wizard-label">{t('projectTypeLabel')}</label>
                 <select
                   className="wizard-input wizard-select"
                   value={payload.projectType}
@@ -385,7 +302,7 @@ export default function ContactWizard() {
                 >
                   {PROJECT_TYPES.map(pt => (
                     <option key={pt} value={pt}>
-                      {PROJECT_TYPE_LABELS[pt][lang]}
+                      {t(`projectTypes.${pt}` as any)}
                     </option>
                   ))}
                 </select>
@@ -393,7 +310,7 @@ export default function ContactWizard() {
 
               <div className="wizard-row-2col">
                 <div className="wizard-field">
-                  <label className="wizard-label">{t.budgetLabel}</label>
+                  <label className="wizard-label">{t('budgetLabel')}</label>
                   <select
                     className="wizard-input wizard-select"
                     value={payload.budget}
@@ -405,7 +322,7 @@ export default function ContactWizard() {
                   </select>
                 </div>
                 <div className="wizard-field">
-                  <label className="wizard-label">{t.timelineLabel}</label>
+                  <label className="wizard-label">{t('timelineLabel')}</label>
                   <select
                     className="wizard-input wizard-select"
                     value={payload.timeline}
@@ -419,12 +336,12 @@ export default function ContactWizard() {
               </div>
 
               <div className="wizard-field">
-                <label className="wizard-label">{t.notesLabel}</label>
+                <label className="wizard-label">{t('notesLabel')}</label>
                 <textarea
                   className="wizard-input wizard-textarea"
                   value={payload.notes}
                   onChange={e => set('notes', e.target.value)}
-                  placeholder={t.notesPh}
+                  placeholder={t('notesPh')}
                   rows={4}
                 />
               </div>
@@ -433,10 +350,10 @@ export default function ContactWizard() {
 
             <div className="wizard-actions wizard-actions--between">
               <button type="button" className="wizard-btn wizard-btn--ghost" onClick={goBack}>
-                {t.back}
+                {t('back')}
               </button>
               <button type="submit" className="wizard-btn wizard-btn--primary">
-                {t.continue}
+                {t('continue')}
               </button>
             </div>
           </form>
@@ -448,12 +365,12 @@ export default function ContactWizard() {
             <div className="wizard-fields">
 
               <div className="wizard-field">
-                <label className="wizard-label">{t.additionalLabel}</label>
+                <label className="wizard-label">{t('additionalLabel')}</label>
                 <textarea
                   className="wizard-input wizard-textarea"
                   value={payload.additional}
                   onChange={e => set('additional', e.target.value)}
-                  placeholder={t.additionalPh}
+                  placeholder={t('additionalPh')}
                   rows={4}
                 />
               </div>
@@ -462,14 +379,14 @@ export default function ContactWizard() {
 
             <div className="wizard-actions wizard-actions--between">
               <button type="button" className="wizard-btn wizard-btn--ghost" onClick={goBack}>
-                {t.back}
+                {t('back')}
               </button>
               <button
                 type="submit"
                 className="wizard-btn wizard-btn--primary"
                 disabled={submitting}
               >
-                {submitting ? t.submitting : t.submit}
+                {submitting ? t('submitting') : t('submit')}
               </button>
             </div>
           </form>

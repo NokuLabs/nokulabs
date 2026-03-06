@@ -1,48 +1,208 @@
 {
-  "nav": {
-    "capabilities": "Capabilities",
-    "approach": "Approach",
-    "reference": "Reference Work",
-    "contact": "Contact"
-  },
   "hero": {
-    "title": "Infrastructure-grade software for operational environments.",
-    "subtitle": "We build systems for organizations where failure has consequences.",
-    "body": "Custom development, automation engineering, AI workflow integration, and security hardening for regulated and mission-critical operations.",
-    "ctaPrimary": "Start a Conversation",
-    "ctaSecondary": "View Reference Work"
+    "h1": "Software built for environments that cannot fail.",
+    "sub": "We work with organizations where downtime is a liability, not a metric.",
+    "body": "Custom development, automation, AI integration, and security hardening. Delivered with the rigor that regulated and mission-critical operations demand.",
+    "ctaPrimary": "Begin engagement",
+    "ctaSecondary": "Review the approach",
+    "trustLine": "Direct response within 24 hours.",
+    "secondTrustLine": "No intermediaries. No obligation."
   },
-  "engagement": {
-    "title": "Request an Architecture Review.",
-    "p1": "This is a qualification gate — not a generic contact form. We’ll review your context, identify risk areas, and reply with a recommended next step.",
-    "p2": "Expected response window: 24–48 hours. If your request is time-sensitive, specify it in the submission."
+
+  "capabilities": {
+    "label": "Capabilities",
+    "title": "Built for high-trust, high-stakes environments.",
+    "systemsArch": {
+      "title": "Systems Architecture",
+      "description": "Infrastructure design, integration planning, and technical roadmap development."
+    },
+    "automation": {
+      "title": "Automation Engineering",
+      "description": "Process digitization, workflow orchestration, and operational tooling."
+    },
+    "aiWorkflow": {
+      "title": "AI Workflow Integration",
+      "description": "Model integration, pipeline automation, and operational ML within existing systems."
+    },
+    "securityHardening": {
+      "title": "Security Hardening",
+      "description": "Threat modeling, access control (RBAC), audit logging, and compliance readiness."
+    }
   },
-  "form": {
-    "progress": "Qualification gate • Step {step} of 3",
-    "response": "Response: 24–48h",
-    "orgLabel": "Organization / Institution",
-    "orgPlaceholder": "e.g., Municipality / Public authority / Private enterprise",
-    "emailLabel": "Work email",
-    "emailPlaceholder": "name@organization.tld",
-    "emailHint": "Personal email is accepted (soft filter), but organizational email gets prioritized.",
-    "continue": "Continue",
-    "needOrgEmail": "Provide an organization and a valid email to continue.",
+
+  "approach": {
+    "label": "Approach",
+    "headline": "Architecture-first delivery.",
+    "constraints": {
+      "title": "Operate on constraints",
+      "description": "We design under real operational limits: offline-first, audit trails, and strict change control."
+    },
+    "failure": {
+      "title": "Engineer for failure",
+      "description": "We assume failures happen and build systems that degrade safely, log everything, and recover cleanly."
+    },
+    "discipline": {
+      "title": "Ship with discipline",
+      "description": "Clear scopes. Deterministic delivery. Documentation that survives audits and personnel turnover."
+    }
+  },
+
+  "security": {
+    "label": "Security",
+    "title": "Security hardening is part of the architecture \u2014 not an add-on.",
+    "item1": "Threat modeling and risk mapping",
+    "item2": "Access control design (RBAC), audit logging, and change control",
+    "item3": "Encryption at rest, secrets handling, and local-only data strategies",
+    "item4": "Operational security posture review"
+  },
+
+  "about": {
+    "label": "About",
+    "headline": "A focused practice. Not an agency.",
+    "body": "NOKU LABS works directly with technical leads and decision-makers in regulated and operationally sensitive environments. No large rosters. No handoffs. Precise, accountable delivery.",
+    "directEngagement": {
+      "title": "Direct engagement",
+      "description": "No account managers or intermediaries. Engineering decisions are made by the engineers doing the work."
+    },
+    "smallByDesign": {
+      "title": "Small by design",
+      "description": "Intentionally limited client load ensures every project receives full technical attention."
+    },
+    "builtToLast": {
+      "title": "Built to last",
+      "description": "Systems we stand behind. Documentation, handover, and post-delivery support are part of the scope."
+    }
+  },
+
+  "trust": {
+    "label": "Trust Signals",
+    "headline": "Built for environments where errors have consequences.",
+    "audit": {
+      "title": "Audit-ready by design",
+      "description": "Immutable logs, RBAC, and deterministic outputs embedded directly into the workflow."
+    },
+    "operationalDiscipline": {
+      "title": "Operational discipline",
+      "description": "Clear scope, clear ownership, and documentation that holds under scrutiny."
+    },
+    "local": {
+      "title": "Local-first capability",
+      "description": "Systems that continue operating when networks fail or constraints tighten."
+    }
+  },
+
+  "systems": {
+    "label": "Reference Work",
+    "title": "Issuance + archival platform for regulated workflows.",
+    "body": "Systems built for strict operational requirements: local-first data, deterministic template rendering, PDF export, archiving, and audit-grade logging.",
+    "cta": "Discuss a similar system"
+  },
+
+  "footer": {
+    "tagline": "Architecture-first systems. Built to hold under scrutiny.",
+    "navTitle": "Navigation",
+    "legalPrivacy": "Privacy",
+    "legalTerms": "Terms",
+    "imprint": "NOKU LABS",
+    "langLabel": "Language",
+    "langNote": "Applies instantly, no refresh.",
+    "nav": {
+      "about": "About",
+      "capabilities": "Capabilities",
+      "approach": "Approach",
+      "work": "Reference Work",
+      "security": "Security",
+      "contact": "Contact"
+    }
+  },
+
+  "header": {
+    "homeLabel": "NOKU LABS home",
+    "switchLang": "Switch language"
+  },
+
+  "cubeNav": {
+    "ariaGroup": "3D navigation cube. Drag or use arrow keys to rotate.",
+    "ariaStatusLabel": "Active face: {face}",
+    "ariaActivePrefix": "Active",
+    "ariaFaceActive": "{label} \u2014 active face, press to select",
+    "faces": {
+      "about": "ABOUT",
+      "capabilities": "CAPABILITIES",
+      "approach": "APPROACH",
+      "work": "WORK",
+      "security": "SECURITY",
+      "contact": "CONTACT"
+    }
+  },
+
+  "wizard": {
+    "stepOf": "Step {n} of 3",
+    "namePh": "First name",
+    "surnamePh": "Last name",
+    "companyPh": "Company (optional)",
+    "emailPh": "Work email",
+    "phonePh": "Phone (optional)",
+    "emailErr": "Enter a valid email to continue.",
+    "projectTypeLabel": "Project type",
     "budgetLabel": "Budget range",
     "timelineLabel": "Timeline",
-    "summaryLabel": "Context summary",
-    "summaryMin": "minimum {min} chars",
-    "summaryPlaceholder": "What environment is this for? Current stack? Constraints? Risks? What does success look like?",
-    "summaryHint": "We respond faster to concrete constraints, scope, and risk signals.",
+    "notesLabel": "Technical / design notes (optional)",
+    "notesPh": "Stack, constraints, risks, success criteria...",
+    "additionalLabel": "Anything else we should know?",
+    "additionalPh": "Other constraints, questions, context... (optional)",
+    "continue": "Continue",
     "back": "Back",
-    "submit": "Submit for review",
-    "submitting": "Submitting…",
-    "receivedTitle": "Received.",
-    "receivedBody": "Your request is in the queue. If additional details are required, we’ll reply to your email.",
-    "receivedWindow": "Typical response window: 24–48 hours.",
-    "missingEndpoint": "Missing form endpoint (NEXT_PUBLIC_LEAD_ENDPOINT).",
-    "rejected": "Submission rejected. Please retry.",
-    "completeForm": "Please complete the form. Summary must be at least {min} characters.",
-    "failed": "Submission failed. Please try again.",
-    "networkError": "Network error. Please try again."
+    "submit": "Submit",
+    "submitting": "Submitting\u2026",
+    "doneTitle": "Thank you.",
+    "doneBody": "We will respond within 24h.",
+    "projectTypes": {
+      "custom-development": "Custom development",
+      "automation": "Automation engineering",
+      "ai-integration": "AI integration",
+      "security-hardening": "Security hardening",
+      "system-architecture": "System architecture",
+      "other": "Other / not sure"
+    }
+  },
+
+  "meta": {
+    "home": {
+      "title": "NOKU LABS \u2013 Infrastructure-grade software for operational environments",
+      "description": "We architect systems for organizations where failure has consequences. Custom development, automation engineering, and security hardening for regulated and mission-critical operations."
+    },
+    "about": {
+      "title": "About \u2014 NOKU LABS",
+      "description": "A focused engineering practice working directly with technical leads in regulated and mission-critical environments. Direct engagement, no intermediaries, and systems built to last."
+    },
+    "capabilities": {
+      "title": "Capabilities \u2014 NOKU LABS",
+      "description": "Systems architecture, automation engineering, AI workflow integration, and security hardening for regulated and mission-critical environments."
+    },
+    "approach": {
+      "title": "Approach \u2014 NOKU LABS",
+      "description": "Architecture-first delivery. We operate on constraints, engineer for failure, and ship with discipline."
+    },
+    "work": {
+      "title": "Reference Work \u2014 NOKU LABS",
+      "description": "Issuance and archival platforms for regulated workflows. Local-first data, deterministic rendering, and audit-grade logging."
+    },
+    "security": {
+      "title": "Security \u2014 NOKU LABS",
+      "description": "Security hardening as architecture. Threat modeling, RBAC, audit logging, encryption, and operational security posture review."
+    },
+    "contact": {
+      "title": "Contact \u2014 NOKU LABS",
+      "description": "Begin an engagement. Direct response within 24 hours. No intermediaries, no obligation."
+    },
+    "privacy": {
+      "title": "Privacy Policy \u2014 NOKU LABS",
+      "description": "How NOKU LABS handles information provided through this website."
+    },
+    "terms": {
+      "title": "Terms of Service \u2014 NOKU LABS",
+      "description": "Terms governing access to the NOKU LABS informational website."
+    }
   }
 }

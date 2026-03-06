@@ -1,8 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Home -->
   <url>
-    <loc>https://nokulabs.com/</loc>
+    <loc>https://nokulabs.com/ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nokulabs.com/ro"/>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://nokulabs.com/en</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nokulabs.com/ro"/>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- About -->
+  <url>
+    <loc>https://nokulabs.com/ro/about</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/about"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nokulabs.com/en/about</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/about"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/about"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Capabilities -->
+  <url>
+    <loc>https://nokulabs.com/ro/capabilities</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/capabilities"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/capabilities"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://nokulabs.com/en/capabilities</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/capabilities"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/capabilities"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Approach -->
+  <url>
+    <loc>https://nokulabs.com/ro/approach</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/approach"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/approach"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nokulabs.com/en/approach</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/approach"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/approach"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Work -->
+  <url>
+    <loc>https://nokulabs.com/ro/work</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/work"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/work"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nokulabs.com/en/work</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/work"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/work"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Security -->
+  <url>
+    <loc>https://nokulabs.com/ro/security</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/security"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/security"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nokulabs.com/en/security</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/security"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/security"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://nokulabs.com/ro/contact</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/contact"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://nokulabs.com/en/contact</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://nokulabs.com/ro/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nokulabs.com/en/contact"/>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
 </urlset>

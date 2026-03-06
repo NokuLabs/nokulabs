@@ -1,18 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 type Locale = 'ro' | 'en'
 
-function otherLocale(l: Locale): Locale {
-  return l === 'ro' ? 'en' : 'ro'
-}
-
-// Replace only the leading "/ro" or "/en" segment, preserving the rest of the path.
-function swapLocaleInPath(pathname: string, next: Locale) {
+function swapLocaleInPath(pathname: string, next: Locale): string {
   if (!pathname) return `/${next}`
   const parts = pathname.split('/')
   if (parts.length >= 2 && (parts[1] === 'ro' || parts[1] === 'en')) {
@@ -23,8 +18,9 @@ function swapLocaleInPath(pathname: string, next: Locale) {
 }
 
 export default function Header() {
-  const locale = (useLocale() as Locale) || 'ro'
+  const locale   = useLocale() as Locale
   const pathname = usePathname() || `/${locale}`
+  const t        = useTranslations('header')
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
@@ -34,10 +30,7 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  function onToggleLocale() {
-    const next = otherLocale(locale)
-    window.location.href = swapLocaleInPath(pathname, next)
-  }
+  const next: Locale = locale === 'ro' ? 'en' : 'ro'
 
   return (
     <header
@@ -51,25 +44,25 @@ export default function Header() {
           <a
             href={`/${locale}`}
             className="text-h4 font-mono font-semibold tracking-tight hover:text-accent transition-colors"
-            aria-label={locale === 'ro' ? 'NOKU LABS acasă' : 'NOKU LABS home'}
+            aria-label={t('homeLabel')}
           >
             NOKU LABS
           </a>
 
-          <button
-            type="button"
-            onClick={onToggleLocale}
-            aria-label={locale === 'ro' ? 'Schimbă limba' : 'Switch language'}
+          {/* Language toggle — link for better SEO and right-click behaviour */}
+          <a
+            href={swapLocaleInPath(pathname, next)}
+            aria-label={t('switchLang')}
             className={cn(
               'inline-flex items-center gap-2 rounded-full border border-border',
               'px-3 py-2 text-small font-medium',
               'bg-background/60 hover:bg-background/80 transition-colors'
             )}
           >
-            <span className="text-secondary">{otherLocale(locale).toUpperCase()}</span>
+            <span className="text-secondary">{next.toUpperCase()}</span>
             <span className="w-px h-4 bg-border" aria-hidden="true" />
             <span className="text-primary">{locale.toUpperCase()}</span>
-          </button>
+          </a>
         </div>
       </div>
     </header>

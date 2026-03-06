@@ -3,23 +3,27 @@
 import { useTranslations } from 'next-intl'
 import SectionLabel from '@/components/ui/SectionLabel'
 
-const PILLAR_KEYS = ['audit', 'operationalDiscipline', 'local'] as const
+const PILLAR_KEYS = ['directEngagement', 'smallByDesign', 'builtToLast'] as const
 
-export default function TrustSignals() {
-  const t = useTranslations('trust')
+export default function About() {
+  const t = useTranslations('about')
 
   return (
     <section
-      id="trust"
+      id="about"
       className="bg-surface border-t border-border px-6 lg:px-12 py-section-mobile md:py-section-desktop"
-      aria-labelledby="trust-title"
+      aria-labelledby="about-title"
     >
       <div className="max-w-content mx-auto">
         <SectionLabel>{t('label')}</SectionLabel>
 
-        <h2 id="trust-title" className="text-h2-mobile md:text-h2-desktop mb-12 text-balance">
+        <h2 id="about-title" className="text-h2-mobile md:text-h2-desktop mb-6 text-balance">
           {t('headline')}
         </h2>
+
+        <p className="text-body-lg text-secondary mb-12 max-w-text">
+          {t('body')}
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {PILLAR_KEYS.map((key) => (

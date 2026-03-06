@@ -1,10 +1,2 @@
-export interface NavItem {
-  label: string
-  href: string
-}
-
-export interface ServiceCard {
-  title: string
-  description: string
-  icon: string
-}
+// Reserved for future shared type definitions.
+// NavItem and ServiceCard were removed — they are now covered by next-intl messages.

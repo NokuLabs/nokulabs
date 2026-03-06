@@ -1,3 +1,35 @@
+import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
+
+const SITE_URL = 'https://nokulabs.com'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'meta.terms' })
+
+  return {
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      type: 'website',
+      url: `${SITE_URL}/${locale}/terms`,
+    },
+    alternates: {
+      canonical: `${SITE_URL}/${locale}/terms`,
+      languages: {
+        en: `${SITE_URL}/en/terms`,
+        ro: `${SITE_URL}/ro/terms`,
+      },
+    },
+  }
+}
+
 export default function TermsPage() {
   return (
     <section className="px-6 lg:px-12 py-section-mobile md:py-section-desktop">
