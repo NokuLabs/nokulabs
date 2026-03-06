@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -18,26 +18,44 @@ function swapLocaleInPath(pathname: string, next: Locale): string {
 }
 
 export default function Header() {
-  const locale   = useLocale() as Locale
-  const pathname = usePathname() || `/${locale}`
-  const t        = useTranslations('header')
-  const [isScrolled, setIsScrolled] = useState(false)
+  const locale    = useLocale() as Locale
+  const pathname  = usePathname() || `/${locale}`
+  const t         = useTranslations('header')
+  const headerRef = useRef<HTMLElement>(null)
 
+  // Progressive scroll-linked header — direct DOM writes, no React re-renders.
+  // Background and blur fade in over the first 80px; border appears at 20px.
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
+    const el = headerRef.current
+    if (!el) return
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const update = () => {
+      const y = window.scrollY
+      const p = Math.min(y / 80, 1)
+
+      el.style.backgroundColor = p > 0 ? `rgba(10,10,10,${(p * 0.95).toFixed(3)})` : ''
+
+      if (!mq.matches) {
+        const blurVal = p > 0.05 ? `blur(${(p * 12).toFixed(1)}px)` : ''
+        el.style.backdropFilter = blurVal
+        ;(el.style as any).webkitBackdropFilter = blurVal
+      }
+
+      el.dataset.scrolled = y > 20 ? 'true' : 'false'
+    }
+
+    window.addEventListener('scroll', update, { passive: true })
+    update()
+    return () => window.removeEventListener('scroll', update)
   }, [])
 
   const next: Locale = locale === 'ro' ? 'en' : 'ro'
 
   return (
     <header
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled ? 'bg-background/95 backdrop-blur-sm border-b border-border' : 'bg-transparent'
-      )}
+      ref={headerRef}
+      className="fixed top-0 left-0 right-0 z-50 border-b border-transparent transition-[border-color] duration-500 data-[scrolled=true]:border-border"
     >
       <div className="max-w-content mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">

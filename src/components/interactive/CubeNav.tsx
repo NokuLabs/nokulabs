@@ -391,6 +391,7 @@ export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
       }, 200)
       const snapIdx = computeActiveFaceIdx(rot.current.x, rot.current.y)
       snapToFace(snapIdx)
+      onFaceSelect?.(FACES[snapIdx].id)
     } else {
       // Was a tap — let the click event on the face button handle navigation.
       // Restart idle as a fallback for taps that land on the scene background.

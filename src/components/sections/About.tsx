@@ -2,11 +2,13 @@
 
 import { useTranslations } from 'next-intl'
 import SectionLabel from '@/components/ui/SectionLabel'
+import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 
 const PILLAR_KEYS = ['directEngagement', 'smallByDesign', 'builtToLast'] as const
 
 export default function About() {
   const t = useTranslations('about')
+  const { ref, visible } = useStaggerReveal()
 
   return (
     <section
@@ -25,11 +27,12 @@ export default function About() {
           {t('body')}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {PILLAR_KEYS.map((key) => (
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {PILLAR_KEYS.map((key, i) => (
             <div
               key={key}
-              className="border border-border bg-background/40 rounded-2xl p-8"
+              className={`border border-border bg-background/40 rounded-2xl p-8 stagger-item${visible ? ' stagger-item--visible' : ''}`}
+              style={{ '--stagger-i': i } as React.CSSProperties}
             >
               <h3 className="text-h4 mb-3">{t(`${key}.title` as any)}</h3>
               <p className="text-body text-secondary">{t(`${key}.description` as any)}</p>

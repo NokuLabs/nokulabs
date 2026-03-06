@@ -2,12 +2,14 @@
 
 import { useTranslations } from 'next-intl'
 import SectionLabel from '@/components/ui/SectionLabel'
+import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 
 // Named keys eliminate the array-index key anti-pattern
 const ITEM_KEYS = ['item1', 'item2', 'item3', 'item4'] as const
 
 export default function Security() {
   const t = useTranslations('security')
+  const { ref, visible } = useStaggerReveal<HTMLUListElement>()
 
   return (
     <section
@@ -25,9 +27,15 @@ export default function Security() {
           {t('title')}
         </h2>
 
-        <ul className="space-y-4 text-body text-secondary max-w-text">
-          {ITEM_KEYS.map((key) => (
-            <li key={key}>{t(key)}</li>
+        <ul ref={ref} className="space-y-4 text-body text-secondary max-w-text">
+          {ITEM_KEYS.map((key, i) => (
+            <li
+              key={key}
+              className={`stagger-item${visible ? ' stagger-item--visible' : ''}`}
+              style={{ '--stagger-i': i } as React.CSSProperties}
+            >
+              {t(key)}
+            </li>
           ))}
         </ul>
       </div>

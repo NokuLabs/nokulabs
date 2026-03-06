@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { Code2, Cog, Workflow, Shield } from 'lucide-react'
 import SectionLabel from '@/components/ui/SectionLabel'
+import { useStaggerReveal } from '@/hooks/useStaggerReveal'
 
 const SERVICES = [
   { key: 'systemsArch',       Icon: Code2    },
@@ -13,6 +14,7 @@ const SERVICES = [
 
 export default function Capabilities() {
   const t = useTranslations('capabilities')
+  const { ref, visible } = useStaggerReveal()
 
   return (
     <section
@@ -27,9 +29,13 @@ export default function Capabilities() {
           {t('title')}
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {SERVICES.map(({ key, Icon }) => (
-            <div key={key} className="border border-border bg-background/40 rounded-2xl p-8">
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {SERVICES.map(({ key, Icon }, i) => (
+            <div
+              key={key}
+              className={`border border-border bg-background/40 rounded-2xl p-8 stagger-item${visible ? ' stagger-item--visible' : ''}`}
+              style={{ '--stagger-i': i } as React.CSSProperties}
+            >
               <div className="flex items-center gap-3 mb-4">
                 <Icon aria-hidden className="w-5 h-5 text-primary" />
                 {/* Dynamic sub-key access: key is a known const, path is always valid */}
