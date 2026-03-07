@@ -14,6 +14,49 @@ import { locales, type Locale } from '../i18n'
 
 const SITE_URL = 'https://nokulabs.com'
 
+// ─── Structured data ──────────────────────────────────────────────────────────
+// Schema.org JSON-LD for Organization + Service.
+// "SoftwareCompany" is not a valid Schema.org type — Organization covers the
+// full identity; a separate Service node captures the practice offering.
+// Fields intentionally omitted (no verified data in project):
+//   logo, sameAs (social profiles), address, telephone, founder, employee.
+const JSON_LD = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type':       'Organization',
+      '@id':         `${SITE_URL}/#organization`,
+      name:          'NOKU Labs',
+      url:           SITE_URL,
+      email:         'contact@nokulabs.com',
+      description:   'We architect systems for organizations where failure has consequences. Custom development, automation engineering, and security hardening for regulated and mission-critical operations.',
+      areaServed:    'Global',
+      knowsAbout: [
+        'Systems Architecture',
+        'Automation Engineering',
+        'AI Workflow Integration',
+        'Security Hardening',
+        'Custom Software Development',
+      ],
+    },
+    {
+      '@type':       'Service',
+      '@id':         `${SITE_URL}/#services`,
+      name:          'Engineering Consulting Services',
+      description:   'Architecture-first software delivery for regulated and mission-critical environments.',
+      provider:      { '@id': `${SITE_URL}/#organization` },
+      areaServed:    'Global',
+      serviceType: [
+        'Custom Development',
+        'Automation Engineering',
+        'AI Integration',
+        'Security Hardening',
+        'Systems Architecture',
+      ],
+    },
+  ],
+}
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }
@@ -68,6 +111,12 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
+        />
+      </head>
       <body className="min-h-screen bg-background text-primary antialiased">
         <a href="#main-content" className="skip-link">Skip to content</a>
 
