@@ -9,13 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#0A0A0A',
-        surface: '#141414',
-        border: '#2A2A2A',
-        primary: '#FFFFFF',
-        secondary: '#A0A0A0',
-        muted: '#8A8A8A', // ✅ boosted for contrast
-        accent: '#F5F5F5',
+        background: '#0B0C0E',
+        surface: '#141517',
+        border: '#2A2D31',
+        primary: '#E6E6E6',
+        secondary: '#BFC3C7',
+        muted: '#8A8F96',
+        accent: '#D0D3D6',
       },
       fontFamily: {
         mono: ['var(--font-jetbrains-mono)', 'monospace'],

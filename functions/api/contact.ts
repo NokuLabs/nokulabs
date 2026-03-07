@@ -30,6 +30,58 @@ interface LeadPayload {
   turnstileToken?: string
 }
 
+// ── Lead scoring ──────────────────────────────────────────────────────────────
+
+type Priority = 'HIGH' | 'MEDIUM' | 'LOW'
+
+function scoreLead(p: LeadPayload): number {
+  let score = 0
+
+  // Budget — biggest signal (0–40 pts)
+  if      (p.budget === '€75k+')      score += 40
+  else if (p.budget === '€25k–€75k')  score += 25
+  else if (p.budget === '€10k–€25k')  score += 10
+  // '< €10k' → 0
+
+  // Project type — complexity proxy (0–20 pts)
+  if (p.projectType === 'system-architecture') score += 20
+  else if (p.projectType === 'security-hardening') score += 18
+  else if (p.projectType === 'ai-integration')     score += 15
+  else if (p.projectType === 'automation')          score += 12
+  else if (p.projectType === 'custom-development')  score += 10
+  // 'other' → 0
+
+  // Company present — indicates professional context (10 pts)
+  if (p.company?.trim()) score += 10
+
+  // Notes + additional detail — effort signal (0–20 pts)
+  const detailLen = (p.notes?.length ?? 0) + (p.additional?.length ?? 0)
+  if      (detailLen >= 200) score += 20
+  else if (detailLen >= 80)  score += 12
+  else if (detailLen >= 20)  score += 5
+
+  // Timeline — realistic windows score higher (0–10 pts)
+  if      (p.timeline === '2–3 months')  score += 10
+  else if (p.timeline === '3–6 months')  score += 10
+  else if (p.timeline === '2–6 weeks')   score += 7
+  else if (p.timeline === '6+ months')   score += 5
+  // '< 2 weeks' → 0 (unrealistic urgency is a risk flag)
+
+  return score
+}
+
+function classifyLead(score: number): Priority {
+  if (score >= 55) return 'HIGH'
+  if (score >= 25) return 'MEDIUM'
+  return 'LOW'
+}
+
+function assessmentLine(priority: Priority): string {
+  if (priority === 'HIGH')   return 'Assessment:    Strong fit — prioritise response'
+  if (priority === 'MEDIUM') return 'Assessment:    Standard fit — follow up within 48h'
+  return                            'Assessment:    Low fit — respond if capacity allows'
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function jsonResponse(body: unknown, status = 200): Response {
@@ -47,13 +99,16 @@ function isValidEmail(email: string): boolean {
   return (domain.split('.').at(-1) ?? '').length >= 2
 }
 
-function buildEmailBody(p: LeadPayload): string {
+function buildEmailBody(p: LeadPayload, score: number, priority: Priority): string {
   const elapsed =
     typeof p.startedAt === 'number'
       ? Math.round((Date.now() - p.startedAt) / 1000)
       : null
 
   const lines: (string | null)[] = [
+    `Priority:      ${priority}  (score: ${score})`,
+    assessmentLine(priority),
+    '',
     `Name:          ${p.name} ${p.surname}`,
     p.company    ? `Company:       ${p.company}`    : null,
     `Email:         ${p.email}`,
@@ -128,6 +183,10 @@ export const onRequestPost = async ({
     return jsonResponse({ ok: false, error: 'server_misconfigured' }, 500)
   }
 
+  // Score and classify the lead
+  const score    = scoreLead(payload)
+  const priority = classifyLead(score)
+
   // Send via Resend
   const resendRes = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -139,8 +198,8 @@ export const onRequestPost = async ({
       from:     'NOKU Labs <leads@nokulabs.com>',
       to:       'contact@nokulabs.com',
       reply_to: payload.email!.trim(),
-      subject:  `New lead — ${payload.name.trim()} ${payload.surname.trim()}`,
-      text:     buildEmailBody(payload),
+      subject:  `[${priority}] New lead — ${payload.name.trim()} ${payload.surname.trim()}`,
+      text:     buildEmailBody(payload, score, priority),
     }),
   })
 

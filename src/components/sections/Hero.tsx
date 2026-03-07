@@ -367,7 +367,7 @@ export default function Hero() {
 
                 {/* Subheadline */}
                 <p
-                  className="hero-line-enter text-sm md:text-base text-primary/50 text-balance max-w-lg leading-relaxed"
+                  className="hero-line-enter text-sm md:text-base text-secondary text-balance max-w-lg leading-relaxed"
                   style={{ animationDelay: '0.22s' }}
                 >
                   {t('sub')}
@@ -398,10 +398,10 @@ export default function Hero() {
                 </div>
 
                 <div className="flex flex-col items-center gap-[6px]">
-                  <p className="text-[11px] font-mono tracking-[0.18em] text-primary/30 uppercase">
+                  <p className="text-[11px] font-mono tracking-[0.18em] text-primary/40 uppercase">
                     {t('trustLine')}
                   </p>
-                  <p className="text-[11px] font-mono tracking-[0.18em] text-primary/30 uppercase">
+                  <p className="text-[11px] font-mono tracking-[0.18em] text-primary/40 uppercase">
                     {t('secondTrustLine')}
                   </p>
                 </div>
@@ -418,8 +418,12 @@ export default function Hero() {
             style={{ willChange: 'transform' }}
           >
             <div ref={cubeMouseRef}>
-              {/* Atmospheric glow orb — breathes behind the cube */}
+              {/* Layer 1 — Wide ambient: brightens background grid in the cube zone */}
+              <div className="hero-cube-ambient" aria-hidden="true" />
+              {/* Layer 2 — Atmospheric orb: breathes slowly, large blurred ellipse */}
               <div className="hero-cube-glow" aria-hidden="true" />
+              {/* Layer 3 — Tight halo: blur-free, sits at cube contact boundary */}
+              <div className="hero-cube-halo" aria-hidden="true" />
 
               <div className="hidden sm:block" style={{ position: 'relative', zIndex: 1 }}>
                 <CubeNav size={560} onFaceSelect={(face: CubeFace) => toggleFace(face)} />
