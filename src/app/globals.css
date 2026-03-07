@@ -162,6 +162,58 @@
   transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
 
+/* ── Per-face directional lighting ──────────────────────────────────────────
+   Light source: soft overhead-front (product photography model).
+   Same specificity as .cube-face (one class each) but later in source, so they
+   override the base background while hover (two selectors) and active (source
+   order after these) remain dominant. */
+
+/* Front — faces camera and light directly, brightest */
+.cube-face--front {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.97) 0%,
+    rgba(247, 247, 247, 0.99) 100%
+  );
+}
+
+/* Top — catches overhead light; gradient runs top-to-bottom for directionality */
+.cube-face--top {
+  background: linear-gradient(
+    to bottom,
+    rgba(253, 253, 253, 0.96) 0%,
+    rgba(244, 244, 244, 0.99) 100%
+  );
+}
+
+/* Left + right — perpendicular to light source, receive less illumination */
+.cube-face--left,
+.cube-face--right {
+  background: linear-gradient(
+    145deg,
+    rgba(238, 238, 238, 0.91) 0%,
+    rgba(228, 228, 228, 0.95) 100%
+  );
+}
+
+/* Back — faces away from light, distinctly darker */
+.cube-face--back {
+  background: linear-gradient(
+    145deg,
+    rgba(224, 224, 224, 0.88) 0%,
+    rgba(214, 214, 214, 0.92) 100%
+  );
+}
+
+/* Bottom — below the light plane, darkest */
+.cube-face--bottom {
+  background: linear-gradient(
+    145deg,
+    rgba(216, 216, 216, 0.86) 0%,
+    rgba(205, 205, 205, 0.90) 100%
+  );
+}
+
 .cube-face:hover {
   background: linear-gradient(
     145deg,
@@ -871,6 +923,47 @@
   );
 }
 
+/* Floor contact shadow — grounding plane beneath the cube.
+   Breathes inversely with the cube float: cube rises → shadow fades + narrows,
+   matching the physics of a light source above the scene. */
+@keyframes cube-shadow-breathe {
+  0%,  100% { opacity: 0.60; transform: translateX(-50%) scaleX(1.00); }
+  50%        { opacity: 0.34; transform: translateX(-50%) scaleX(0.84); }
+}
+
+.hero-cube-shadow {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 44px;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    rgba(0, 0, 0, 0.52) 0%,
+    rgba(0, 0, 0, 0.22) 42%,
+    rgba(0, 0, 0, 0.06) 68%,
+    transparent        100%
+  );
+  filter: blur(8px);
+  border-radius: 50%;
+  animation: cube-shadow-breathe 5.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-cube-shadow { will-change: transform, opacity; }
+}
+
+@media (max-width: 639px) {
+  .hero-cube-shadow {
+    width: 60%;
+    height: 30px;
+    bottom: -12px;
+  }
+}
+
 /* Scan line — single horizontal light sweep across the hero */
 @keyframes hero-scan {
   0%   { transform: translateY(-100vh); opacity: 0;    }
@@ -916,7 +1009,8 @@
 @media (prefers-reduced-motion: reduce) {
   .cube-cinema-enter,
   .hero-line-enter { animation: none; }
-  .hero-cube-glow  { animation: none; }
-  .hero-cube-halo  { animation: none; }
-  .hero-scan-line  { display: none; }
+  .hero-cube-glow   { animation: none; }
+  .hero-cube-halo   { animation: none; }
+  .hero-cube-shadow { animation: none; }
+  .hero-scan-line   { display: none; }
 }

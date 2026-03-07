@@ -465,7 +465,7 @@ export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
               return (
                 <div
                   key={face.id}
-                  className={`cube-face${isActive ? ' cube-face--active' : ''}`}
+                  className={`cube-face cube-face--${slot}${isActive ? ' cube-face--active' : ''}`}
                   style={{
                     position:                 'absolute',
                     inset:                    0,

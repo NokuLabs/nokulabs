@@ -297,12 +297,20 @@ export default function Hero() {
         <div ref={bgRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }} aria-hidden="true">
           {/* Structural grid */}
           <div className="absolute inset-0 grid-background opacity-[0.55]" />
-          {/* Central radial light source — gives the background dimensionality */}
+          {/* Primary central light — tighter, focused illumination at cube center */}
           <div
             className="absolute inset-0"
             style={{
               background:
-                'radial-gradient(ellipse 90% 70% at 50% 46%, rgba(255,255,255,0.018) 0%, rgba(210,218,255,0.007) 42%, transparent 68%)',
+                'radial-gradient(ellipse 72% 56% at 50% 48%, rgba(255,255,255,0.034) 0%, rgba(215,220,255,0.010) 36%, transparent 62%)',
+            }}
+          />
+          {/* Secondary depth ring — wider softer falloff, staged transition to dark edges */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(ellipse 110% 80% at 50% 50%, rgba(255,255,255,0.016) 0%, rgba(255,255,255,0.005) 42%, transparent 68%)',
             }}
           />
         </div>
@@ -424,6 +432,8 @@ export default function Hero() {
               <div className="hero-cube-glow" aria-hidden="true" />
               {/* Layer 3 — Tight halo: blur-free, sits at cube contact boundary */}
               <div className="hero-cube-halo" aria-hidden="true" />
+              {/* Layer 4 — Floor shadow: grounding ellipse beneath the cube base */}
+              <div className="hero-cube-shadow" aria-hidden="true" />
 
               <div className="hidden sm:block" style={{ position: 'relative', zIndex: 1 }}>
                 <CubeNav size={560} onFaceSelect={(face: CubeFace) => toggleFace(face)} />
