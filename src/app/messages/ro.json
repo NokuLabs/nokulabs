@@ -157,6 +157,7 @@
     "submitting": "Se trimite\u2026",
     "doneTitle": "Mul\u021bumim.",
     "doneBody": "Revenim \u00een 24h.",
+    "submitErr": "Ceva nu a func\u021bionat. \u00cencerca\u021bi din nou sau scrie\u021bi direct la contact@nokulabs.com.",
     "projectTypes": {
       "custom-development": "Dezvoltare custom",
       "automation": "Automatiz\u0103ri",

@@ -157,6 +157,7 @@
     "submitting": "Submitting\u2026",
     "doneTitle": "Thank you.",
     "doneBody": "We will respond within 24h.",
+    "submitErr": "Something went wrong. Please try again or email contact@nokulabs.com directly.",
     "projectTypes": {
       "custom-development": "Custom development",
       "automation": "Automation engineering",

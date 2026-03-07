@@ -61,10 +61,11 @@ function isValidEmail(email: string): boolean {
 export default function ContactWizard() {
   const t = useTranslations('wizard')
 
-  const [step, setStep]           = useState<WizardStep>(1)
-  const [submitted, setSubmitted] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [emailError, setEmailError] = useState(false)
+  const [step, setStep]               = useState<WizardStep>(1)
+  const [submitted, setSubmitted]     = useState(false)
+  const [submitting, setSubmitting]   = useState(false)
+  const [submitError, setSubmitError] = useState(false)
+  const [emailError, setEmailError]   = useState(false)
 
   // Direction for step transition animation — written before setStep, read during render
   const stepDirRef   = useRef<StepDir>('forward')
@@ -116,34 +117,27 @@ export default function ContactWizard() {
   // ── Submit ────────────────────────────────────────────────────────────────
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    // Bot trap
+    // Bot trap — silently accept, mirrors server-side check
     if (payload.honeypot) { setSubmitted(true); return }
 
-    const endpoint = process.env.NEXT_PUBLIC_LEAD_ENDPOINT
     setSubmitting(true)
+    setSubmitError(false)
     try {
-      if (endpoint) {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({
-            ...payload,
-            name:      payload.name.trim(),
-            surname:   payload.surname.trim(),
-            email:     payload.email.trim(),
-            startedAt: startedAt.current,
-          }),
-        })
-        if (!res.ok) throw new Error('non-ok')
-      } else {
-        // No endpoint configured — mock for static demo
-        console.log('[ContactWizard] submitted', payload)
-        await new Promise(r => setTimeout(r, 600))
-      }
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          ...payload,
+          name:      payload.name.trim(),
+          surname:   payload.surname.trim(),
+          email:     payload.email.trim(),
+          startedAt: startedAt.current,
+        }),
+      })
+      if (!res.ok) throw new Error('send_failed')
       setSubmitted(true)
     } catch {
-      // Fail gracefully — show confirmation anyway to avoid blocking the user
-      setSubmitted(true)
+      setSubmitError(true)
     } finally {
       setSubmitting(false)
     }
@@ -389,6 +383,12 @@ export default function ContactWizard() {
                 {submitting ? t('submitting') : t('submit')}
               </button>
             </div>
+
+            {submitError && (
+              <p className="wizard-field-error" role="alert" style={{ marginTop: '12px', textAlign: 'center' }}>
+                {t('submitErr')}
+              </p>
+            )}
           </form>
         )}
 
