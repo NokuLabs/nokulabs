@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, Fragment, useRef, useState } from 'react'
+import { FormEvent, Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 // ─── Const arrays → derive union types ────────────────────────────────────────
@@ -61,11 +61,12 @@ function isValidEmail(email: string): boolean {
 export default function ContactWizard() {
   const t = useTranslations('wizard')
 
-  const [step, setStep]               = useState<WizardStep>(1)
-  const [submitted, setSubmitted]     = useState(false)
-  const [submitting, setSubmitting]   = useState(false)
-  const [submitError, setSubmitError] = useState(false)
-  const [emailError, setEmailError]   = useState(false)
+  const [step, setStep]                   = useState<WizardStep>(1)
+  const [submitted, setSubmitted]         = useState(false)
+  const [submitting, setSubmitting]       = useState(false)
+  const [submitError, setSubmitError]     = useState(false)
+  const [emailError, setEmailError]       = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
 
   // Direction for step transition animation — written before setStep, read during render
   const stepDirRef   = useRef<StepDir>('forward')
@@ -79,6 +80,20 @@ export default function ContactWizard() {
     timeline: TIMELINES[2],  // '2–3 months'
     notes: '', additional: '', honeypot: '',
   })
+
+  // ── Turnstile script + callback ───────────────────────────────────────────
+  useEffect(() => {
+    ;(window as any).__onTurnstile = (token: string) => setTurnstileToken(token)
+
+    if (!document.getElementById('cf-turnstile-script')) {
+      const s = document.createElement('script')
+      s.id    = 'cf-turnstile-script'
+      s.src   = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
+      s.async = true
+      s.defer = true
+      document.head.appendChild(s)
+    }
+  }, [])
 
   // ── Focus first interactive element on step change ──────────────────────────
   const prevStep = useRef(step)
@@ -128,10 +143,11 @@ export default function ContactWizard() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           ...payload,
-          name:      payload.name.trim(),
-          surname:   payload.surname.trim(),
-          email:     payload.email.trim(),
-          startedAt: startedAt.current,
+          name:           payload.name.trim(),
+          surname:        payload.surname.trim(),
+          email:          payload.email.trim(),
+          startedAt:      startedAt.current,
+          turnstileToken,
         }),
       })
       if (!res.ok) throw new Error('send_failed')
@@ -371,6 +387,14 @@ export default function ContactWizard() {
 
             </div>
 
+            {/* Turnstile widget — token required before submit */}
+            <div
+              className="cf-turnstile"
+              data-sitekey="0x4AAAAAAAACntDpws-31ylz-2"
+              data-callback="__onTurnstile"
+              style={{ margin: '12px 0' }}
+            />
+
             <div className="wizard-actions wizard-actions--between">
               <button type="button" className="wizard-btn wizard-btn--ghost" onClick={goBack}>
                 {t('back')}
@@ -378,7 +402,7 @@ export default function ContactWizard() {
               <button
                 type="submit"
                 className="wizard-btn wizard-btn--primary"
-                disabled={submitting}
+                disabled={submitting || !turnstileToken}
               >
                 {submitting ? t('submitting') : t('submit')}
               </button>

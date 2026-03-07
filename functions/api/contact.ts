@@ -5,11 +5,13 @@
  * validates it, and sends a notification email via Resend.
  *
  * Environment variables (set as Cloudflare secrets):
- *   RESEND_API_KEY — your Resend API key
+ *   RESEND_API_KEY     — your Resend API key
+ *   TURNSTILE_SECRET   — Cloudflare Turnstile secret key
  */
 
 interface Env {
-  RESEND_API_KEY: string
+  RESEND_API_KEY:   string
+  TURNSTILE_SECRET: string
 }
 
 interface LeadPayload {
@@ -23,8 +25,9 @@ interface LeadPayload {
   timeline?:    string
   notes?:       string
   additional?:  string
-  honeypot?:    string
-  startedAt?:   number
+  honeypot?:       string
+  startedAt?:      number
+  turnstileToken?: string
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -87,6 +90,26 @@ export const onRequestPost = async ({
   // Bot trap — silently accept so bots receive no signal
   if (payload.honeypot) {
     return jsonResponse({ ok: true })
+  }
+
+  // Turnstile verification
+  if (!payload.turnstileToken) {
+    return jsonResponse({ ok: false, error: 'turnstile_missing' }, 422)
+  }
+  const tsVerify = await fetch(
+    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+    {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:    new URLSearchParams({
+        secret:   env.TURNSTILE_SECRET,
+        response: payload.turnstileToken,
+      }),
+    },
+  )
+  const tsResult = (await tsVerify.json()) as { success: boolean }
+  if (!tsResult.success) {
+    return jsonResponse({ ok: false, error: 'turnstile_failed' }, 403)
   }
 
   // Field validation
