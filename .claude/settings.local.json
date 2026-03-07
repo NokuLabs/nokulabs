@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "Bash(node --version)",
+      "Bash(npm --version)",
+      "Bash(npx --yes canvas --version)",
+      "Bash(python3 -c \"from PIL import Image; print\\(''PIL ok''\\)\")",
+      "Bash(python3 -c \"import sys; print\\(sys.version\\)\")",
+      "Bash(npm list -g --depth=0)",
+      "Bash(npm install @napi-rs/canvas --no-save)",
+      "Bash(node -e \"const {createCanvas} = require\\(''@napi-rs/canvas''\\); console.log\\(''OK''\\)\")",
+      "Bash(fc-list)",
+      "Read(//c/Windows/Fonts//**)",
+      "Bash(node scripts/gen-og.js)"
     ]
   }
 }

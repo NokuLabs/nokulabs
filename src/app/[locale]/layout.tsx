@@ -70,23 +70,41 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'meta.home' })
+  const t          = await getTranslations({ locale, namespace: 'meta.home' })
+  const ogLocale   = locale === 'ro' ? 'ro_RO' : 'en_US'
+  const pageUrl    = `${SITE_URL}/${locale}`
 
   return {
     metadataBase: new URL(SITE_URL),
-    title: t('title'),
-    description: t('description'),
+    title:        t('title'),
+    description:  t('description'),
     openGraph: {
-      title: t('title'),
+      title:       t('title'),
       description: t('description'),
-      type: 'website',
-      url: `${SITE_URL}/${locale}`,
+      type:        'website',
+      url:         pageUrl,
+      siteName:    'NOKU Labs',
+      locale:      ogLocale,
+      images: [
+        {
+          url:    '/og/nokulabs-og.jpg',
+          width:  1200,
+          height: 630,
+          alt:    'NOKU Labs — Infrastructure-grade software for operational environments',
+        },
+      ],
+    },
+    twitter: {
+      card:        'summary_large_image',
+      title:       t('title'),
+      description: t('description'),
+      images:      ['/og/nokulabs-og.jpg'],
     },
     alternates: {
-      canonical: `${SITE_URL}/${locale}`,
+      canonical: pageUrl,
       languages: {
-        en: `${SITE_URL}/en`,
-        ro: `${SITE_URL}/ro`,
+        en:          `${SITE_URL}/en`,
+        ro:          `${SITE_URL}/ro`,
         'x-default': `${SITE_URL}/ro`,
       },
     },
