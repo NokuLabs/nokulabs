@@ -338,53 +338,66 @@ export default function Hero() {
           >
             <div
               ref={introMouseRef}
-              className="flex flex-col items-center text-center gap-4"
+              className="flex flex-col items-center text-center"
             >
-              {/* Brand eyebrow — decorative, language-neutral */}
-              <div
-                className="hero-line-enter flex items-center gap-4"
-                style={{ animationDelay: '0.0s' }}
-                aria-hidden="true"
-              >
-                <span className="w-8 h-px bg-primary/18" />
-                <span className="text-[10px] font-mono tracking-[0.38em] text-primary/25 uppercase select-none">
-                  NOKU LABS
-                </span>
-                <span className="w-8 h-px bg-primary/18" />
+              {/* ── Text context: eyebrow / headline / subheadline ────── */}
+              <div className="flex flex-col items-center gap-[10px]">
+
+                {/* Brand eyebrow — decorative, language-neutral */}
+                <div
+                  className="hero-line-enter flex items-center gap-4"
+                  style={{ animationDelay: '0.0s' }}
+                  aria-hidden="true"
+                >
+                  <span className="w-8 h-px bg-primary/18" />
+                  <span className="text-[10px] font-mono tracking-[0.38em] text-primary/25 uppercase select-none">
+                    NOKU LABS
+                  </span>
+                  <span className="w-8 h-px bg-primary/18" />
+                </div>
+
+                {/* Headline — LCP, never animated directly */}
+                <h1
+                  id="hero-title"
+                  className="hero-line-enter text-2xl sm:text-3xl md:text-[2.6rem] font-medium tracking-tight text-balance leading-tight max-w-2xl"
+                  style={{ animationDelay: '0.10s' }}
+                >
+                  {t('h1')}
+                </h1>
+
+                {/* Subheadline */}
+                <p
+                  className="hero-line-enter text-sm md:text-base text-primary/50 text-balance max-w-lg leading-relaxed"
+                  style={{ animationDelay: '0.22s' }}
+                >
+                  {t('sub')}
+                </p>
+
               </div>
 
-              {/* Headline — LCP, never animated directly */}
-              <h1
-                id="hero-title"
-                className="hero-line-enter text-2xl sm:text-3xl md:text-[2.6rem] font-semibold tracking-tight text-balance leading-tight max-w-2xl"
-                style={{ animationDelay: '0.10s' }}
-              >
-                {t('h1')}
-              </h1>
-
-              {/* Subheadline */}
-              <p
-                className="hero-line-enter text-sm md:text-base text-primary/50 text-balance max-w-lg leading-relaxed"
-                style={{ animationDelay: '0.22s' }}
-              >
-                {t('sub')}
-              </p>
-
-              {/* ── CTAs + trust ──────────────────────────────────────── */}
+              {/* ── Action group — intentional air separates context from CTA ── */}
               <div
-                className="hero-line-enter flex flex-col items-center gap-5 pt-2"
+                className="hero-line-enter flex flex-col items-center gap-5 mt-8"
                 style={{ animationDelay: '0.55s' }}
               >
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button variant="primary" onClick={() => toggleFace('contact')}>
+                  <Button
+                    variant="primary"
+                    onClick={() => toggleFace('contact')}
+                    className="bg-white/[0.08] border border-white/[0.18] text-white/90 hover:bg-white/[0.14] hover:border-white/[0.28] hover:text-white focus:ring-white/30 font-mono text-[11px] tracking-[0.12em] uppercase px-6 py-3 leading-none"
+                  >
                     {t('ctaPrimary')}
                   </Button>
-                  <Button variant="secondary" onClick={() => toggleFace('approach')}>
+                  <Button
+                    variant="secondary"
+                    onClick={() => toggleFace('approach')}
+                    className="border-white/[0.10] text-white/45 hover:border-white/[0.18] hover:text-white/65 focus:ring-white/20 font-mono text-[11px] tracking-[0.12em] uppercase px-6 py-3 leading-none"
+                  >
                     {t('ctaSecondary')}
                   </Button>
                 </div>
 
-                <div className="flex flex-col items-center gap-1">
+                <div className="flex flex-col items-center gap-[6px]">
                   <p className="text-[11px] font-mono tracking-[0.18em] text-primary/30 uppercase">
                     {t('trustLine')}
                   </p>

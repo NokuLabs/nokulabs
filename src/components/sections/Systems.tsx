@@ -1,7 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import SectionLabel from '@/components/ui/SectionLabel'
 import Button from '@/components/ui/Button'
 

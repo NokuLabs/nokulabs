@@ -9,7 +9,7 @@ export default function SectionLabel({ children, className }: SectionLabelProps)
   return (
     <p
       className={cn(
-        'text-small font-medium uppercase tracking-wider text-secondary mb-6',
+        'font-mono text-[11px] uppercase tracking-[0.22em] text-secondary mb-6',
         className
       )}
     >
