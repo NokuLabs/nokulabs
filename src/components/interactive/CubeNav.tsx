@@ -510,19 +510,15 @@ export default function CubeNav({ onFaceSelect, size = 280 }: CubeNavProps) {
       </div>
 
       {/* ── Active-face indicator ─────────────────────────────────────────── */}
-      <div
-        className="cube-status"
-        aria-live="polite"
-        aria-atomic="true"
-        aria-label={t('ariaStatusLabel', { face: activeFaceLabel })}
-      >
+      {/* role="status" = implicit aria-live="polite" + aria-atomic="true".   */}
+      {/* The name span must NOT be aria-hidden so the live region announces  */}
+      {/* the face label when it changes. Prefix/dash are decorative only.   */}
+      <div className="cube-status" role="status">
         <span className="cube-status-prefix" aria-hidden="true">
           {t('ariaActivePrefix')}
         </span>
         <span className="cube-status-dash" aria-hidden="true">─</span>
-        <span className="cube-status-name" aria-hidden="true">
-          {activeFaceLabel}
-        </span>
+        <span className="cube-status-name">{activeFaceLabel}</span>
       </div>
 
     </div>
